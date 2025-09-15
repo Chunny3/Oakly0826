@@ -2,14 +2,12 @@
 
 import "@/styles/cart/cartCard.css";
 import React, { useState } from "react";
-import React, { useState } from "react";
 import { useCart } from "@/hooks/use-cart";
 // sweetalert2 對話盒
 import Swal from "sweetalert2";
 // sweetalert2 整合 react 的函式
 import withReactContent from "sweetalert2-react-content";
 
-export default function CartCard({ type, selectedItems, onItemSelect }) {
 export default function CartCard({ type, selectedItems, onItemSelect }) {
   const [showForm, setShowForm] = useState(false);
   const { items, onDecrease, onIncrease, onRemove, totalQty, totalAmount } =
@@ -111,7 +109,6 @@ export default function CartCard({ type, selectedItems, onItemSelect }) {
           <div className="cart-line phone"></div>
           <div className="cart-card phone">
             {items.map((item, index) => (
-            {items.map((item, index) => (
               <div key={index} className="cardAll">
                 <div className="cart-main phone">
                   <div className="card-left">
@@ -172,7 +169,6 @@ export default function CartCard({ type, selectedItems, onItemSelect }) {
       return (
         <>
           <div className="cart-card pc">
-            {items.map((item, index) => (
             {items.map((item, index) => (
               <div key={index} className="cart-main">
                 <div className="card-left">

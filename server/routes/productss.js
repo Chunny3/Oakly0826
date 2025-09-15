@@ -1,7 +1,7 @@
 import express from "express";
 import db from "../connect.js";
 import { getProductsFromDB } from "./models/products.js";
-import Fuse from 'fuse.js';
+// import Fuse from 'fuse.js';
 
 
 

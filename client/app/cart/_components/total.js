@@ -14,7 +14,6 @@ import { useRouter } from "next/navigation";
 
 export default function Total({ type }) {
   const [coupon, setCoupon] = useState([]);
-  const [coupon, setCoupon] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedCoupon, setSelectedCoupon] = useState(null);

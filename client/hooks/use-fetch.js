@@ -29,7 +29,7 @@ export function useFetch(url, options) {
     // 與伺服器進行fetch的異步函式
     async function fetchData() {
       try {
-        const res = await fetch(connectedUrl, options)
+        const res = await fetch(url, options)
         const json = await res.json()
         setData(json)
         setLoading(false) // 停止載入
