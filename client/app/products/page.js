@@ -1425,7 +1425,7 @@ const MainProduct = () => {
         <div className="products-container">
           <div className="wrapper">
             {/* 左側邊欄 */}
-            <aside className="sidebar">
+            <aside className="sidebar2">
               <div className="filter-sections">
                 {/* 分類 */}
                 <div className="filter-section">

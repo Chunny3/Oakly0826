@@ -8,5 +8,9 @@ ALTER TABLE chat_messages MODIFY COLUMN sender_type ENUM('customer', 'agent', 'b
 
 -- 重新開啟外鍵檢查
 SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE chat_messages
+  MODIFY COLUMN room_id INT(11) NOT NULL;
+
 DELETE FROM chat_rooms 
 WHERE status = 'waiting' AND customer_id LIKE 'transfer_%';
