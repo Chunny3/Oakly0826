@@ -65,7 +65,7 @@ export default function UserEditForm() {
     // districts 下拉（顯示 區名 + 郵遞區號，但送出仍是區名）
     const districts = selectedCity
         ? selectedCity.districts.map(d => ({
-            value: d.name,                 
+            value: d.name,
             label: d.name
         }))
         : []
@@ -161,7 +161,14 @@ export default function UserEditForm() {
             if (password) {
                 const pw = await updateUserPassword(user.id, password);
                 // messages.push(`密碼：${pw.success ? '✔ 成功' : `✘ 失敗（${pw.message || '未知原因'}）`}`);
-                if (pw.success) { setPassword(''); setPassword2(''); }
+                if (pw.success) {
+                    setPassword('');
+                    setPassword2('');
+                    // ✅ 密碼修改成功 → 登出並導到登入頁
+                    await logout();
+                    router.replace("/auth/login");
+                    return; // 直接結束，不要再跑後面
+                }
             }
 
             // 2-3 頭像（有選檔才送）
@@ -170,7 +177,7 @@ export default function UserEditForm() {
                 // messages.push(`頭像：${av.success ? '✔ 成功' : `✘ 失敗（${av.message || '未知原因'}）`}`);
                 if (av.success) { setAvatar(null); } // 清掉暫存檔
             }
-            
+
         } catch (err) {
             toast.error('伺服器錯誤，請稍後再試');
         } finally {
@@ -221,7 +228,7 @@ export default function UserEditForm() {
                             value={name} onChange={e => setName(e.target.value)} />
 
                         <UserTextInput id="birth" label="生日" type="date" required
-                            value={birthday} onChange={e => setBirthday(e.target.value)} 
+                            value={birthday} onChange={e => setBirthday(e.target.value)}
                             max={new Date().toISOString().split("T")[0]} />
 
                         <UserTextInput id="phone" label="電話" type="tel" required

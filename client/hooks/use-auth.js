@@ -220,8 +220,8 @@ export function AuthProvider({ children }) {
       });
       const result = await res.json();
       if (result.status === "success") {
-        toast.success(result.message || "密碼更新成功"); // ✅ 新增
-        return { success: true, message: result.message || "密碼更新成功" };
+        toast.success(result.message || "密碼更新成功，請重新登入"); // ✅ 新增
+        return { success: true, message: result.message || "密碼更新成功，請重新登入" };
       }
       toast.error(result.message || "密碼更新失敗"); // ✅ 新增
       return { success: false, message: result.message || "密碼更新失敗" };

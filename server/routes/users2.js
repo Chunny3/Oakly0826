@@ -461,9 +461,18 @@ router.put("/:id/edit", checkToken, upload.none(), async (req, res) => {
       err.status = "fail";
       throw err;
     }
+
+    // ✅ 新增：更新成功後再查一次最新資料
+    const [rows] = await pool.execute(
+      "SELECT id, name, birthday, email, phone, postcode, city, area, address, avatar FROM users WHERE id = ?",
+      [id]
+    );
+    const updatedUser = rows[0];
+
     res.status(200).json({
       status: "success",
       message: "使用者資料更新成功",
+      data: { user: updatedUser },  // ← 關鍵：把最新 user 回給前端
     });
   } catch (error) {
     // 補獲錯誤
