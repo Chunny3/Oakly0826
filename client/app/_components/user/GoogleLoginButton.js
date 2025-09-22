@@ -8,16 +8,34 @@ export default function GoogleLoginButton({ onSuccess }) {
     async function handleClick() {
         try {
             setLoading(true);
-            const { idToken, user } = await signInWithGooglePopup();
 
-            // console.log("🔥 idToken.len =", idToken?.length, "parts =", idToken?.split(".").length);
-            // console.log("🔥 idToken =", idToken); 
+            // 確保 Firebase Google 登入成功
+            const result = await signInWithGooglePopup();
+            
+            // 檢查返回的數據結構
+            if (!result || !result.idToken) {
+                throw new Error("無法從 Google 獲取身份令牌");
+            }
+
+            const { idToken, user } = result;
+            
+            console.log("🔥 Google Auth 成功，準備發送到後端");
 
             const res = await fetch("/api/auth/google", {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "application/json",
+                    // 添加必要的標頭
+                    "Accept": "application/json"
+                 },
                 credentials: "include", // 若你用 httpOnly cookie 可保留；若用 localStorage 可拿掉
-                body: JSON.stringify({ idToken }),
+                body: JSON.stringify({ idToken,
+                    // 添加用戶信息作為備份
+                    userInfo: {
+                        uid: user?.uid,
+                        email: user?.email,
+                        displayName: user?.displayName,
+                        photoURL: user?.photoURL
+                    } }),
             });
 
             const data = await res.json();
@@ -25,12 +43,13 @@ export default function GoogleLoginButton({ onSuccess }) {
 
             // 3) 從後端回傳的資料中取出需要的欄位
             // 預期後端回傳: { status, token, user }
-            const { token, user: backendUser } = data || {};
-
+            const { token, user: backendUser } = data;
             // 4) 傳回前端上層 (login.js)
             onSuccess?.({ token, user: backendUser });
+
         } catch (err) {
-            alert(err.message);
+            console.error("Google 登入錯誤:", err);
+            alert(`登入失敗: ${err.message}`);
         } finally {
             setLoading(false);
         }
