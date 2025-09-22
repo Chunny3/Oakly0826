@@ -59,8 +59,9 @@ export default function FavoritesPage() {
         // ⬇ 為了相容 cartCard.js 的讀法
         colors: { id: item.color_id ?? 0, color_name: item.color_name || "無顏色" },
         sizes: item.size_label ? [{ id: item.size_id ?? 0, size_label: item.size_label }] : [],
-        materials_id: item.materials_id ?? 0,
-        materials: { id: item.materials_id ?? 0, material_name: item.material_name || "無類別" },
+        // materials_id: item.materials_id ?? 0,
+        // materials: { id: item.materials_id ?? 0, material_name: item.material_name || "無類別" },
+        
     });
 
     useEffect(() => {
@@ -158,14 +159,14 @@ export default function FavoritesPage() {
                                 </span>
                             )}
                             {/* ✅ 安全判斷材質 */}
-                            <span className={styles.optionPill} aria-label="材質">
+                            {/* <span className={styles.optionPill} aria-label="材質">
                                 {
                                     Array.isArray(item.materials)
                                         ? item.materials.find(m => m.id === item.materials_id)?.material_name
                                         : item.materials?.material_name
                                         || '無材質'
                                 }
-                            </span>
+                            </span> */}
                         </div>
                     </div>
 
