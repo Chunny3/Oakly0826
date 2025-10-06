@@ -916,7 +916,7 @@ export default function SearchResultsPage() {
         <div className="products-container">
           <div className="wrapper">
             {/* 左側邊欄 - 完全複用產品頁面 */}
-            <aside className="sidebar">
+            <aside className="sidebar2">
               <div className="filter-sections">
                 <div className="filter-section">
                   <h3 className="filter-title">篩選</h3>

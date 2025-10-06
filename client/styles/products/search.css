@@ -1775,7 +1775,6 @@ span {
   .productcard {
     height: auto;
     overflow: visible;
-
   }
 
   .image {
@@ -1787,7 +1786,8 @@ span {
   .image img {
     object-fit: cover;
     overflow: visible;
-    
+    overflow: visible;
+
 
   }
 
