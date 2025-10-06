@@ -20,27 +20,11 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  justify-content: space-between;
   align-self: stretch;
 }
 
-.choose-cp button {
-  display: flex;
-  padding: 5px var(--card-padding-sm, 20px);
-  justify-content: space-between;
-  align-items: center;
-  color: var(--primary-05);
-  flex: 1;
-  border-radius: 10px;
-  border: 2px solid var(--color-gray-600, #ababab);
-  background-color: var(--white, #fff);
-  box-shadow: 10px 10px 35px 0 rgba(0, 0, 0, 0.25);
-}
 
-.choose-cp button:hover {
-  background-color: var(--primary-04);
-  border: 2px solid var(--primary-04, #ababab);
-  color: var(--white);
-}
 
 .cp-discount {
   display: flex;

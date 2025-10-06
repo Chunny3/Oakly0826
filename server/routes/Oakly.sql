@@ -8,27 +8,24 @@ drop table users;
 
 -- 會員
 CREATE TABLE IF NOT EXISTS users (
-  id         INT UNSIGNED NOT NULL AUTO_INCREMENT,
-  name       VARCHAR(50)  NOT NULL,
-  birthday   DATE DEFAULT NULL,
-  email      VARCHAR(100) NOT NULL UNIQUE,
-  password   VARCHAR(100) NOT NULL,
-  phone      VARCHAR(20)  DEFAULT NULL,
-  postcode   VARCHAR(10)  DEFAULT NULL,
-  city       VARCHAR(50)  DEFAULT NULL,
-  area       VARCHAR(50)  DEFAULT NULL,
-  address    VARCHAR(255) DEFAULT NULL,
-  avatar     VARCHAR(255) DEFAULT NULL,
-  level_id   INT UNSIGNED DEFAULT 1,   -- 可為 NULL；預設 1
-  is_valid   TINYINT(1) NOT NULL DEFAULT 1,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (id),
-  CONSTRAINT fk_users_level
-    FOREIGN KEY (level_id) REFERENCES user_levels(id)
-    ON UPDATE CASCADE
-    ON DELETE SET NULL,
-  CHECK (is_valid IN (0,1))
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    birthday DATE DEFAULT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) DEFAULT NULL,
+    postcode VARCHAR(10) DEFAULT NULL,
+    city VARCHAR(50) DEFAULT NULL,
+    area VARCHAR(50) DEFAULT NULL,
+    address VARCHAR(255) DEFAULT NULL,
+    avatar VARCHAR(255) DEFAULT NULL,
+    level_id INT UNSIGNED DEFAULT 1, -- 可為 NULL；預設 1
+    is_valid TINYINT(1) NOT NULL DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_users_level FOREIGN KEY (level_id) REFERENCES user_levels (id) ON UPDATE CASCADE ON DELETE SET NULL,
+    CHECK (is_valid IN (0, 1))
 );
 
 -- CREATE TABLE `member_levels` (
@@ -38,28 +35,25 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 會員等級
 DROP TABLE user_levels;
+
 CREATE TABLE IF NOT EXISTS user_levels (
-  id   INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name VARCHAR(20) DEFAULT NULL,
-  UNIQUE KEY uq_user_levels_name (name)
-) ;
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(20) DEFAULT NULL,
+    UNIQUE KEY uq_user_levels_name (name)
+);
 
 -- 我的最愛
 CREATE TABLE IF NOT EXISTS favorites (
-  id         INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  user_id    INT UNSIGNED NOT NULL,
-  product_id INT NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_fav_user_product (user_id, product_id),
-  KEY idx_fav_user (user_id),
-  KEY idx_fav_product (product_id),
-  CONSTRAINT fk_fav_user
-    FOREIGN KEY (user_id) REFERENCES users(id)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT fk_fav_product
-    FOREIGN KEY (product_id) REFERENCES products(id)
-    ON UPDATE CASCADE ON DELETE CASCADE
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    product_id INT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_fav_user_product (user_id, product_id),
+    KEY idx_fav_user (user_id),
+    KEY idx_fav_product (product_id),
+    CONSTRAINT fk_fav_user FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_fav_product FOREIGN KEY (product_id) REFERENCES products (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
 SELECT f.product_id, f.color_id, f.color_name, f.size_id, f.quantity,
        p.name, p.price, p.product_img
@@ -118,22 +112,17 @@ CREATE TABLE stock_notifications (
 -------------------------------------
 -- 收藏文章
 CREATE TABLE IF NOT EXISTS bookmarks (
-  id         INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  user_id    INT UNSIGNED NOT NULL,
-  article_id INT UNSIGNED NOT NULL,
-  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-  updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UNIQUE KEY uq_bookmark_user_article (user_id, article_id),
-  KEY idx_bm_user (user_id),
-  KEY idx_bm_article (article_id),
-  CONSTRAINT fk_bm_user
-    FOREIGN KEY (user_id) REFERENCES users(id)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT fk_bm_article
-    FOREIGN KEY (article_id) REFERENCES articles(id)
-    ON UPDATE CASCADE ON DELETE CASCADE
+    id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    article_id INT UNSIGNED NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_bookmark_user_article (user_id, article_id),
+    KEY idx_bm_user (user_id),
+    KEY idx_bm_article (article_id),
+    CONSTRAINT fk_bm_user FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_bm_article FOREIGN KEY (article_id) REFERENCES articles (id) ON UPDATE CASCADE ON DELETE CASCADE
 );
- 
 
 -- 優惠券
 CREATE TABLE coupons (
@@ -211,9 +200,11 @@ CREATE TABLE article_tracking (
     event_data JSON,
     create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (article_id) REFERENCES articles (id),
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
+
 UPDATE products SET is_valid = 0 WHERE id = 123;
+
 UPDATE products SET is_valid = 0 WHERE id = 162;
 
 -- 商品
@@ -351,26 +342,29 @@ CREATE TABLE stock (
 );
 
 -- 訂單表
-CREATE TABLE orders(
+CREATE TABLE orders (
     id INT AUTO_INCREMENT PRIMARY KEY,
     order_number VARCHAR(20) NOT NULL UNIQUE,
     user_id INT UNSIGNED NOT NULL,
     total_amount INT NOT NULL,
     create_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        -- 訂購人資訊
-	buyer_name VARCHAR(100) NOT NULL,
+    -- 訂購人資訊
+    buyer_name VARCHAR(100) NOT NULL,
     buyer_email VARCHAR(100),
     buyer_phone VARCHAR(20),
-        -- 收件人資訊
+    -- 收件人資訊
     recipient_name VARCHAR(100) NOT NULL,
     recipient_phone VARCHAR(20) NOT NULL,
-    postal_code VARCHAR(20) NOT NULL,
     address VARCHAR(255) NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
+    -- 付款資訊
+    payment_status VARCHAR(20),
+    payment_method VARCHAR(20),
+    coupon_id INT,
+    FOREIGN KEY (user_id) REFERENCES users (id)
 );
 
 -- 訂單商品表
-CREATE TABLE order_items(
+CREATE TABLE order_items (
     id INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     order_id INT NOT NULL,
     product_id INT NOT NULL,
@@ -379,8 +373,8 @@ CREATE TABLE order_items(
     size VARCHAR(10),
     color VARCHAR(30),
     material VARCHAR(30),
-    FOREIGN KEY(order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY(product_id) REFERENCES products(id)
+    FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products (id)
 )
 
 UPDATE order_items oi
@@ -395,106 +389,110 @@ ALTER TABLE order_items MODIFY COLUMN size VARCHAR(500);
 
 -- 商品補充
 -- --------------------------------------------------------
-INSERT INTO `colors` (`id`, `color_name`) VALUES
-(1, '白色'),
-(2, '黑色'),
-(3, '原木色'),
-(4, '淺灰'),
-(5, '深灰'),
-(6, '淺藍'),
-(7, '深藍'),
-(8, '淺綠'),
-(9, '深綠'),
-(10, '米黃色');
+INSERT INTO
+    `colors` (`id`, `color_name`)
+VALUES (1, '白色'),
+    (2, '黑色'),
+    (3, '原木色'),
+    (4, '淺灰'),
+    (5, '深灰'),
+    (6, '淺藍'),
+    (7, '深藍'),
+    (8, '淺綠'),
+    (9, '深綠'),
+    (10, '米黃色');
 
 -- product--------------------------------------------------------
 
 CREATE TABLE `colors` (
-  `id` int(11) NOT NULL,
-  `color_name` varchar(50) DEFAULT NULL
+    `id` int(11) NOT NULL,
+    `color_name` varchar(50) DEFAULT NULL
 )
 
 CREATE TABLE `designers` (
-  `id` int(11) NOT NULL,
-  `name` varchar(100) DEFAULT NULL
-) 
+    `id` int(11) NOT NULL,
+    `name` varchar(100) DEFAULT NULL
+)
 
 CREATE TABLE `materials` (
-  `id` int(11) NOT NULL,
-  `material_name` varchar(100) DEFAULT NULL
+    `id` int(11) NOT NULL,
+    `material_name` varchar(100) DEFAULT NULL
 )
 
 CREATE TABLE `materials_list` (
-  `product_id` int(11) NOT NULL,
-  `materials_id` int(11) NOT NULL
+    `product_id` int(11) NOT NULL,
+    `materials_id` int(11) NOT NULL
 )
 
 CREATE TABLE `products` (
-  `id` int(11) UNSIGNED NOT NULL,
-  `name` varchar(100) DEFAULT NULL,
-  `category_id` int(11) NOT NULL,
-  `description` text DEFAULT NULL,
-  `price` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `create_at` datetime DEFAULT current_timestamp(),
-  `update_at` datetime DEFAULT current_timestamp(),
-  `is_valid` tinyint(4) DEFAULT 1,
-  `style` varchar(255) DEFAULT NULL,
-  `status` tinyint(1) DEFAULT 1,
-  `colors` int(11) NOT NULL DEFAULT 1,
-  `designers_id` int(11) NOT NULL DEFAULT 1,
-  `materials_id` int(11) NOT NULL DEFAULT 1,
-   PRIMARY KEY (`id`)
+    `id` int(11) UNSIGNED NOT NULL,
+    `name` varchar(100) DEFAULT NULL,
+    `category_id` int(11) NOT NULL,
+    `description` text DEFAULT NULL,
+    `price` int(11) NOT NULL,
+    `quantity` int(11) NOT NULL,
+    `create_at` datetime DEFAULT current_timestamp(),
+    `update_at` datetime DEFAULT current_timestamp(),
+    `is_valid` tinyint(4) DEFAULT 1,
+    `style` varchar(255) DEFAULT NULL,
+    `status` tinyint(1) DEFAULT 1,
+    `colors` int(11) NOT NULL DEFAULT 1,
+    `designers_id` int(11) NOT NULL DEFAULT 1,
+    `materials_id` int(11) NOT NULL DEFAULT 1,
+    PRIMARY KEY (`id`)
 )
 
 CREATE TABLE `products_category` (
-  `category_id` int(11) NOT NULL,
-  `category_name` varchar(30) DEFAULT NULL
-) 
+    `category_id` int(11) NOT NULL,
+    `category_name` varchar(30) DEFAULT NULL
+)
 
 CREATE TABLE `product_colors` (
-  `product_id` int(11) NOT NULL,
-  `color_id` int(11) NOT NULL
+    `product_id` int(11) NOT NULL,
+    `color_id` int(11) NOT NULL
 )
 
 CREATE TABLE `product_img` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `img` varchar(500) DEFAULT NULL
+    `id` int(11) NOT NULL,
+    `product_id` int(11) NOT NULL,
+    `img` varchar(500) DEFAULT NULL
 )
 
 CREATE TABLE `product_sizes` (
-  `product_id` int(11) NOT NULL,
-  `size_id` int(11) NOT NULL
-) 
+    `product_id` int(11) NOT NULL,
+    `size_id` int(11) NOT NULL
+)
 
 CREATE TABLE `reviews` (
-  `id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `rating` int(11) NOT NULL CHECK (`rating` >= 1 and `rating` <= 5),
-  `comment` text NOT NULL,
-  `user_name` varchar(100) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `avatar` varchar(255) DEFAULT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `reviews_img` text DEFAULT NULL
-) 
+    `id` int(11) NOT NULL,
+    `user_id` int(11) NOT NULL,
+    `product_id` int(11) NOT NULL,
+    `rating` int(11) NOT NULL CHECK (
+        `rating` >= 1
+        and `rating` <= 5
+    ),
+    `comment` text NOT NULL,
+    `user_name` varchar(100) DEFAULT NULL,
+    `email` varchar(255) DEFAULT NULL,
+    `avatar` varchar(255) DEFAULT NULL,
+    `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+    `reviews_img` text DEFAULT NULL
+)
 
 CREATE TABLE `sizes` (
-  `id` int(11) NOT NULL,
-  `size_label` varchar(50) DEFAULT NULL
-) 
+    `id` int(11) NOT NULL,
+    `size_label` varchar(50) DEFAULT NULL
+)
 
 CREATE TABLE `stocks` (
-  `id` int(11) NOT NULL,
-  `color_id` int(11) NOT NULL,
-  `size_id` int(11) NOT NULL,
-  `amount` int(11) DEFAULT 0
-) 
+    `id` int(11) NOT NULL,
+    `color_id` int(11) NOT NULL,
+    `size_id` int(11) NOT NULL,
+    `amount` int(11) DEFAULT 0
+)
 
 CREATE TABLE `style` (
-  `id` int(11) NOT NULL,
-  `product_id` int(11) NOT NULL,
-  `des` varchar(255) DEFAULT NULL
+    `id` int(11) NOT NULL,
+    `product_id` int(11) NOT NULL,
+    `des` varchar(255) DEFAULT NULL
 )

@@ -1,4 +1,5 @@
 use oakly;
+SELECT * FROM users WHERE id = 1;
 SELECT DATABASE();
 
 --關閉外建檢查

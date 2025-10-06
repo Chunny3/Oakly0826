@@ -25,6 +25,8 @@ export default function CartDetailPage() {
   const [items, setItems] = useState([]);
   const payFormDiv = useRef(null);
 
+
+
   const createEcpayForm = (params, action) => {
     const form = document.createElement("form");
     form.method = "POST";

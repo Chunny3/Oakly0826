@@ -28,7 +28,7 @@ export default function CouponPage() {
   if (error) return <div>發生錯誤: {error.message}</div>
 
 
-const router = useRouter()
+  const router = useRouter()
 
   return (
     <>
@@ -86,54 +86,69 @@ const router = useRouter()
             <div className={`d-flex flex-column ${styles.gap80}`}>
               <div className="d-flex flex-column align-items-center gap-xl">
                 <h3 className="t-primary03 text-center">北部區域</h3>
-                <div className={styles.organizerGrid}>
-                  {organizers
-                    .filter(organizers => organizers.region === 1)
-                    .map((organizer) => (
-                      <OrganizerCard
-                        key={organizer.id}
-                        name={organizer.name}
-                        area="北部"
-                        imageUrl={`http://localhost:3005${organizer.photo}`}
-                        contentText={organizer.introduction}
-                      />
-                    ))
-                  }
-                </div>
+                {loading ?
+                  <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: '200px' }}>
+                    <div className="loaderLine"></div>
+                  </div> :
+                  <div className={styles.organizerGrid}>
+                    {organizers
+                      .filter(organizers => organizers.region === 1)
+                      .map((organizer) => (
+                        <OrganizerCard
+                          key={organizer.id}
+                          name={organizer.name}
+                          area="北部"
+                          imageUrl={`http://localhost:3005${organizer.photo}`}
+                          contentText={organizer.introduction}
+                        />
+                      ))
+                    }
+                  </div>
+                }
               </div>
               <div className="d-flex flex-column align-items-center gap-xl">
                 <h3 className="t-primary03 text-center">中部區域</h3>
-                <div className={styles.organizerGrid}>
-                  {organizers
-                    .filter(organizers => organizers.region === 2)
-                    .map((organizer) => (
-                      <OrganizerCard
-                        key={organizer.id}
-                        name={organizer.name}
-                        area="中部"
-                        imageUrl={`http://localhost:3005${organizer.photo}`}
-                        contentText={organizer.introduction}
-                      />
-                    ))
-                  }
-                </div>
+                {loading ?
+                  <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: '200px' }}>
+                    <div className="loaderLine"></div>
+                  </div> :
+                  <div className={styles.organizerGrid}>
+                    {organizers
+                      .filter(organizers => organizers.region === 2)
+                      .map((organizer) => (
+                        <OrganizerCard
+                          key={organizer.id}
+                          name={organizer.name}
+                          area="中部"
+                          imageUrl={`http://localhost:3005${organizer.photo}`}
+                          contentText={organizer.introduction}
+                        />
+                      ))
+                    }
+                  </div>
+                }
               </div>
               <div className="d-flex flex-column align-items-center gap-xl">
                 <h3 className="t-primary03 text-center">南部區域</h3>
-                <div className={styles.organizerGrid}>
-                  {organizers
-                    .filter(organizers => organizers.region === 3)
-                    .map((organizer) => (
-                      <OrganizerCard
-                        key={organizer.id}
-                        name={organizer.name}
-                        area="南部"
-                        imageUrl={`http://localhost:3005${organizer.photo}`}
-                        contentText={organizer.introduction}
-                      />
-                    ))
-                  }
-                </div>
+                {loading ?
+                  <div className="d-flex justify-content-center align-items-center w-100" style={{ minHeight: '200px' }}>
+                    <div className="loaderLine"></div>
+                  </div> :
+                  <div className={styles.organizerGrid}>
+                    {organizers
+                      .filter(organizers => organizers.region === 3)
+                      .map((organizer) => (
+                        <OrganizerCard
+                          key={organizer.id}
+                          name={organizer.name}
+                          area="南部"
+                          imageUrl={`http://localhost:3005${organizer.photo}`}
+                          contentText={organizer.introduction}
+                        />
+                      ))
+                    }
+                  </div>
+                }
               </div>
             </div>
           </div>
@@ -203,7 +218,7 @@ const router = useRouter()
                   </p>
                 </div>
                 <GreenBorderButton
-                onClick={()=> router.push("organizer/form")}
+                  onClick={() => router.push("organizer/form")}
                 >立即預約諮詢</GreenBorderButton>
               </div>
             </div>

@@ -34,9 +34,9 @@ const authenticateToken = (req, res, next) => {
 };
 
 const router = express.Router();
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 // 確保上傳目錄存在
 const uploadDir = path.join(__dirname, '../public/uploads/reviews');
 if (!fs.existsSync(uploadDir)) {
@@ -204,6 +204,9 @@ router.get('/reviews/sort-options', (req, res) => {
 });
 
 router.post('/reviews', async (req, res) => {
+  console.log('req.body 存在嗎?', !!req.body);
+  console.log('req.body 內容:', req.body);
+  console.log('req.body 類型:', typeof req.body);
 
   if (!req.body) {
     return res.status(400).json({

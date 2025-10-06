@@ -47,6 +47,7 @@ const upload = multer({
 // 在線用戶管理 (全域變數，在整個應用中共享)
 let onlineUsers = new Map();
 let customerServiceAgents = new Map();
+let sentTransferRequests = new Set(); 
 let io = null;
 
 // 初始化 WebSocket
@@ -143,111 +144,162 @@ export const initializeChatWebSocket = (server) => {
     // 客戶加入聊天系統
     socket.on('join_as_customer', async (userData) => {
       try {
-
         let userId, userName, isAuthenticated;
-
-
-
+    
         if (socket.isAuthenticated && socket.userData) {
-          // 認證用戶
           userId = socket.userData.id;
           userName = socket.userData.name;
           isAuthenticated = true;
         } else {
-          // 訪客用戶 - 這裡是關鍵修改
           userId = `guest_${socket.id}`;
           userName = userData?.userName || '訪客';
           isAuthenticated = false;
         }
-
-
+    
+        // 檢查是否已有該用戶的連接
+        if (isAuthenticated) {
+          for (const [existingUserId, userInfo] of onlineUsers.entries()) {
+            if (existingUserId === userId && userInfo.socketId !== socket.id) {
+              console.log(`🔄 用戶 ${userId} 重複連接，斷開舊連接 ${userInfo.socketId}`);
+              const oldSocket = io.sockets.sockets.get(userInfo.socketId);
+              if (oldSocket) {
+                oldSocket.emit('force_disconnect', { reason: '新連接已建立' });
+                oldSocket.disconnect(true);
+              }
+              onlineUsers.delete(existingUserId);
+            }
+          }
+        }
+    
         onlineUsers.set(userId, {
           socketId: socket.id,
           userName: userName,
           isAuthenticated: isAuthenticated
         });
-
-
+    
         socket.userId = userId;
-        socket.userName = userName
+        socket.userName = userName;
         socket.userType = 'customer';
-
-
-        // 只有認證用戶才查詢歷史聊天
+    
+        // 🔥 添加這段完整的歷史聊天檢查邏輯
         if (isAuthenticated) {
           const [existingRooms] = await connection.execute(
             'SELECT * FROM chat_rooms WHERE customer_id = ? AND status IN ("waiting", "active") ORDER BY created_at DESC LIMIT 1',
             [userId]
           );
-
+    
           if (existingRooms.length > 0) {
             const room = existingRooms[0];
             socket.join(`room_${room.id}`);
-
+    
             const [messages] = await connection.execute(
               'SELECT * FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC',
               [room.id]
             );
-
+    
             socket.emit('room_joined', {
               roomId: room.id,
               status: room.status,
               agentName: room.agent_name,
               messages: messages
             });
-            return; // 重要：找到現有房間就返回，不要繼續執行
+            return;
           }
         }
+    
         // 如果沒有現有房間，發送連接成功訊息
         socket.emit('connection_success', {
           userId: userId,
           userName: userName,
           isAuthenticated: isAuthenticated
         });
-
-
+    
       } catch (error) {
         console.error('客戶加入失敗:', error);
         socket.emit('error', { message: '連接失敗，請重新整理頁面' });
       }
     });
 
-    // 客服加入系統
     socket.on('join_as_agent', async (agentData) => {
       try {
         const { agentId, agentName } = agentData;
-
-        if (!agentId) {
+        
+        // 驗證 agentId 不能為空
+        if (!agentId || agentId === undefined || agentId === null) {
+          console.error('客服 ID 無效:', agentId);
           socket.emit('error', { message: '客服 ID 不能為空' });
           return;
         }
-
+        
+        // 客服加入 agents 房間
+        socket.join('agents');
+        console.log(`客服 ${agentName} (ID: ${agentId}) 已加入 agents 房間`);
+        
+        // 註冊客服資訊
         customerServiceAgents.set(agentId, {
           socketId: socket.id,
           agentId: agentId,
           agentName: agentName || `客服${agentId}`,
           status: 'available'
         });
-
+        
+        // 🔥 關鍵：設定 socket 屬性
         socket.agentId = agentId;
         socket.agentName = agentName || `客服${agentId}`;
         socket.userType = 'agent';
-
+        
+        console.log(`設定 socket.agentId = ${socket.agentId}`);
+        
+        // 通知客服連接成功
         socket.emit('agent_connected', {
           success: true,
           agentId: agentId,
           agentName: agentName
         });
-
-
-
-        // 取得等待中的客戶列表
+    
+        // 取得當前等待中的客戶列表（傳統客服請求）
         const [waitingRooms] = await connection.execute(
-          'SELECT * FROM chat_rooms WHERE status = "waiting" ORDER BY created_at ASC'
+          'SELECT * FROM chat_rooms WHERE status = "waiting" AND customer_id NOT LIKE "guest_%" AND customer_id NOT LIKE "transfer_%" ORDER BY created_at ASC'
         );
-
+    
         socket.emit('waiting_customers', waitingRooms);
-
+    
+        // 改進等待轉接的查詢 - 使用更嚴格的去重邏輯
+        const [waitingTransfers] = await connection.execute(`
+          SELECT 
+            MIN(id) as id,
+            customer_id,
+            customer_name,
+            is_authenticated,
+            MIN(created_at) as created_at,
+            SUBSTRING_INDEX(SUBSTRING_INDEX(customer_id, '_', 2), '_', -1) as user_base_id
+          FROM chat_rooms 
+          WHERE status = "waiting" AND customer_id LIKE "transfer_%" 
+          GROUP BY SUBSTRING_INDEX(SUBSTRING_INDEX(customer_id, '_', 2), '_', -1)
+          ORDER BY MIN(created_at) ASC
+        `);
+    
+        console.log(`找到 ${waitingTransfers.length} 個去重後的轉接請求`);
+    
+        // 發送去重後的轉接請求
+        for (const transfer of waitingTransfers) {
+          const [chatHistory] = await connection.execute(
+            'SELECT * FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC',
+            [transfer.id]
+          );
+    
+          socket.emit('new_transfer_request', {
+            roomId: `human_${transfer.id}`,
+            customer: {
+              userName: transfer.customer_name || '轉接客戶',
+              isAuthenticated: transfer.is_authenticated
+            },
+            chatHistory: chatHistory,
+            transferReason: '客戶轉接請求（等待中）',
+            timestamp: transfer.created_at
+          });
+        }
+        
       } catch (error) {
         console.error('客服加入失敗:', error);
         socket.emit('error', { message: '客服連接失敗' });
@@ -288,7 +340,7 @@ export const initializeChatWebSocket = (server) => {
         // 建立新聊天室
         const [result] = await connection.execute(
           'INSERT INTO chat_rooms (customer_id, customer_name, status, is_authenticated) VALUES (?, ?, "waiting", ?)',
-          [userId, userName, isAuthenticated]
+          [userData.userId || `guest_${socket.id}`, userData.userName, userData.isAuthenticated]
         );
 
         const roomId = result.insertId;
@@ -334,6 +386,9 @@ export const initializeChatWebSocket = (server) => {
         socket.emit('error', { message: '請求客服失敗，請稍後重試' });
       }
     });
+
+
+   
 
     // 客服接受聊天
     socket.on('accept_chat', async (data) => {
@@ -412,6 +467,46 @@ export const initializeChatWebSocket = (server) => {
         socket.emit('error', { message: '接受聊天失敗' });
       }
     });
+    // 在後端 socket 事件監聽中添加
+    socket.on('send_message_to_bot', (data) => {
+      const { message, roomId, userData } = data;
+
+      // 根據快速回覆內容生成回應
+      let botResponse = '';
+
+      switch (message) {
+        case '產品諮詢':
+          botResponse = '我們提供各式家具產品，包括沙發、床組、餐桌椅等。您想了解哪類產品呢？可以告訴我您的需求，我會為您推薦合適的商品。';
+          break;
+        case '訂單查詢':
+          botResponse = userData.isAuthenticated ?
+            '請提供您的訂單編號，我來幫您查詢訂單狀態。' :
+            '請先登入會員帳號，或提供您的訂單編號和聯絡電話。';
+          break;
+        case '退換貨服務':
+          botResponse = '我們提供 7 天鑑賞期，商品如有瑕疵可申請退換貨。請告訴我您遇到的問題，我會協助您處理。';
+          break;
+        case '配送問題':
+          botResponse = '關於配送問題，我可以幫您查詢配送進度或安排配送時間。請告訴我您的具體需求。';
+          break;
+        case '售後服務':
+          botResponse = '我們提供完整的售後服務保障。請描述您遇到的問題，我會為您安排適當的處理方式。';
+          break;
+        case '其他問題':
+          botResponse = '請告訴我您想了解的問題，我會盡力為您解答。如需更詳細的協助，也可以轉接真人客服。';
+          break;
+        default:
+          botResponse = '我收到您的訊息了，請稍等片刻讓我為您查詢相關資訊...';
+      }
+
+      // 模擬機器人思考時間
+      setTimeout(() => {
+        socket.emit('bot_response', {
+          message: botResponse,
+          timestamp: new Date().toISOString()
+        });
+      }, 1000 + Math.random() * 2000); // 1-3秒隨機延遲
+    });
     // 發送訊息
     socket.on('send_message', async (data) => {
       try {
@@ -457,6 +552,166 @@ export const initializeChatWebSocket = (server) => {
       }
     });
 
+    socket.on('request_human_transfer', async (data) => {
+      const { roomId, userData, previousMessages, transferReason } = data;
+      
+      // 🔥 改進去重邏輯 - 使用更唯一的標識
+      const transferCustomerId = `transfer_${userData.userId || socket.id}_${Date.now()}`;
+      
+      try {
+        // 🔥 檢查是否已有相同用戶的等待轉接（更嚴格的查詢）
+        const [existingTransfer] = await connection.execute(
+          'SELECT * FROM chat_rooms WHERE (customer_id LIKE ? OR customer_id LIKE ?) AND status = "waiting"',
+          [`transfer_${userData.userId || socket.id}%`, `%${userData.userId || socket.id}%`]
+        );
+        
+        if (existingTransfer.length > 0) {
+          console.log(`⚠️ 轉接已存在 - 用戶: ${userData.userId || socket.id}`);
+          socket.emit('transfer_initiated', {
+            newRoomId: `human_${existingTransfer[0].id}`,
+            status: 'waiting',
+            message: '您的轉接請求已在處理中，請稍候...'
+          });
+          return;
+        }
+    
+        // 創建新的轉接房間
+        const [result] = await connection.execute(
+          'INSERT INTO chat_rooms (customer_id, customer_name, status, is_authenticated) VALUES (?, ?, "waiting", ?)',
+          [transferCustomerId, userData.userName, userData.isAuthenticated]
+        );
+        
+        const dbRoomId = result.insertId;
+        console.log(`✅ 創建新轉接房間: ${dbRoomId}`);
+        
+        // 🔥 修正：保存聊天記錄時處理 null 的 userId
+        for (const msg of previousMessages) {
+          let senderType = msg.sender_type === 'bot' ? 'customer' : msg.sender_type;
+          
+          // 🔥 關鍵修正：處理非會員用戶的 sender_id
+          let senderId;
+          if (msg.sender_type === 'customer') {
+            senderId = userData.userId || userData.userName || 'guest_user'; // 非會員用戶使用替代ID
+          } else {
+            senderId = 'bot';
+          }
+          
+          await connection.execute(
+            'INSERT INTO chat_messages (room_id, sender_id, sender_name, sender_type, message, message_type) VALUES (?, ?, ?, ?, ?, ?)',
+            [dbRoomId, senderId, userData.userName, senderType, msg.message, msg.message_type || 'text']
+          );
+        }
+        
+        // 發送轉接請求給所有客服
+        io.to('agents').emit('new_transfer_request', {
+          roomId: `human_${dbRoomId}`,
+          customer: userData,
+          chatHistory: previousMessages,
+          transferReason: transferReason,
+          timestamp: new Date()
+        });
+        
+        socket.emit('transfer_initiated', {
+          newRoomId: `human_${dbRoomId}`,
+          status: 'waiting',
+          message: '您的轉接請求已送出，客服專員將盡快為您服務'
+        });
+        
+      } catch (error) {
+        console.error('轉接處理失敗:', error);
+        socket.emit('error', { message: '轉接失敗，請稍後重試' });
+      }
+    });
+    socket.on('accept_transfer', async (data) => {
+      try {
+        const { roomId } = data;
+        const dbRoomId = roomId.replace('human_', '');
+        const currentAgentId = socket.agentId;
+        let agentInfo = customerServiceAgents.get(currentAgentId);
+        
+        // 獲取聊天室資訊
+        const [roomInfo] = await connection.execute(
+          'SELECT * FROM chat_rooms WHERE id = ?',
+          [dbRoomId]
+        );
+        
+        if (roomInfo.length === 0) {
+          socket.emit('error', { message: '聊天室不存在' });
+          return;
+        }
+        
+        // 更新聊天室狀態
+        await connection.execute(
+          'UPDATE chat_rooms SET agent_id = ?, agent_name = ?, status = "active" WHERE id = ?',
+          [currentAgentId, agentInfo.agentName, dbRoomId]
+        );
+        
+        socket.join(`room_${dbRoomId}`);
+    
+        // 讓客戶加入聊天室
+        const allSockets = await io.fetchSockets();
+        allSockets.forEach(clientSocket => {
+          if (clientSocket.userType === 'customer') {
+            clientSocket.join(`room_${dbRoomId}`);
+          }
+        });
+    
+        // 🔥 載入歷史訊息並過濾機器人訊息
+        const [allMessages] = await connection.execute(
+          'SELECT * FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC',
+          [dbRoomId]
+        );
+    
+        // 🔥 過濾掉機器人訊息
+        const filteredMessages = allMessages.filter(msg => {
+          if (msg.sender_type === 'bot') return false;
+          if (msg.sender_id === 'bot') return false;
+          if (msg.message && msg.message.includes('Oakly 智能助手')) return false;
+          if (msg.message && msg.message.includes('智能助手')) return false;
+          return msg.sender_type === 'customer' || msg.sender_type === 'agent';
+        });
+    
+        // 添加客服歡迎訊息
+        const welcomeMessage = `您好！我是客服 ${agentInfo.agentName}，已接手為您服務。請問有什麼可以幫助您的？`;
+        
+        const [welcomeResult] = await connection.execute(
+          'INSERT INTO chat_messages (room_id, sender_id, sender_name, sender_type, message, message_type) VALUES (?, ?, ?, ?, ?, ?)',
+          [dbRoomId, currentAgentId, agentInfo.agentName, 'agent', welcomeMessage, 'text']
+        );
+    
+        const welcomeMessageData = {
+          id: welcomeResult.insertId,
+          room_id: dbRoomId,
+          sender_id: currentAgentId,
+          sender_name: agentInfo.agentName,
+          sender_type: 'agent',
+          message: welcomeMessage,
+          message_type: 'text',
+          created_at: new Date().toISOString()
+        };
+    
+        // 🔥 通知聊天室，使用過濾後的訊息
+        io.to(`room_${dbRoomId}`).emit('chat_accepted', {
+          roomId: parseInt(dbRoomId),
+          agentId: currentAgentId,
+          agentName: agentInfo.agentName,
+          customerName: roomInfo[0].customer_name || '客戶',
+          messages: [...filteredMessages, welcomeMessageData] // 使用過濾後的訊息
+        });
+    
+        // 通知其他客服此轉接已被接受
+        socket.to('agents').emit('transfer_accepted_by_other', {
+          roomId: roomId
+        });
+    
+        agentInfo.status = 'busy';
+        customerServiceAgents.set(currentAgentId, agentInfo);
+    
+      } catch (error) {
+        console.error('接受轉接失敗:', error);
+        socket.emit('error', { message: '接受轉接失敗' });
+      }
+    });
 
     // 取得客服的進行中對話
     socket.on('get_active_chats', async (data) => {
@@ -532,23 +787,22 @@ export const initializeChatWebSocket = (server) => {
         socket.emit('error', { message: '訊息發送失敗' });
       }
     });
-    // 結束聊天
     socket.on('end_chat', async (data) => {
       try {
         const { roomId } = data;
-
+    
         // 更新聊天室狀態為已關閉
         await connection.execute(
           'UPDATE chat_rooms SET status = "closed" WHERE id = ?',
           [roomId]
         );
-
+    
         // 取得聊天室資訊
         const [rooms] = await connection.execute(
           'SELECT * FROM chat_rooms WHERE id = ?',
           [roomId]
         );
-
+    
         if (rooms.length > 0 && rooms[0].agent_id) {
           // 更新客服狀態為可用
           const agent = customerServiceAgents.get(rooms[0].agent_id);
@@ -557,15 +811,14 @@ export const initializeChatWebSocket = (server) => {
             customerServiceAgents.set(rooms[0].agent_id, agent);
           }
         }
-
-
-        // 通知聊天室內所有用戶
+    
+        // 重要：廣播給聊天室內所有用戶（包括客服和客戶）
         io.to(`room_${roomId}`).emit('chat_ended', { roomId });
-
+    
         // 讓所有用戶離開聊天室
         const socketsInRoom = await io.in(`room_${roomId}`).fetchSockets();
         socketsInRoom.forEach(s => s.leave(`room_${roomId}`));
-
+    
       } catch (error) {
         console.error('結束聊天失敗:', error);
         socket.emit('error', { message: '結束聊天失敗' });
@@ -654,10 +907,14 @@ router.get("/messages/:roomId", async (req, res) => {
       'SELECT * FROM chat_messages WHERE room_id = ? ORDER BY created_at ASC',
       [roomId]
     );
+  // 🔥 在後端就過濾掉機器人訊息
+  const filteredMessages = messages.filter(msg => 
+    msg.sender_type === 'customer' || msg.sender_type === 'agent'
+  );
 
     res.status(200).json({
       status: 'success',
-      data: messages,
+      data: filteredMessages,
       message: "訊息獲取成功"
     });
   } catch (error) {
@@ -769,7 +1026,7 @@ router.post('/upload-image', upload.single('image'), (req, res) => {
     }
 
     const imageUrl = `/uploads/chat/${req.file.filename}`;
-    
+
     res.json({
       success: true,
       imageUrl: `http://localhost:3005${imageUrl}`,

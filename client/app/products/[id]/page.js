@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import "@/styles/products/pid.css";
 import "@/styles/products/notify.css";
+
 import SimilarProducts from "@/app/_components/SimilarProducts.js";
 import Bestseller from "@/app/_components/bestseller.js";
 import RecentViewedProducts from "@/app/_components/RecentViewedProducts.js";
@@ -13,6 +14,7 @@ import { useAuth } from "@/hooks/use-auth";
 import Swal from 'sweetalert2';
 import BuyNowButton from '@/app/products/_components/BuyNowButton.js';
 import Link from "next/link";
+
 
 
 const checkStock = async (productId, colorId, sizeId, quantity) => {
@@ -929,6 +931,25 @@ export default function PidPage({ params }) {
 
         if (result.status === "success") {
           setProductData(result.data);
+
+          // 獲取評論統計
+          try {
+            const reviewResponse = await fetch(
+              `http://localhost:3005/api/products/${productId}/reviews?limit=1`
+            );
+            const reviewResult = await reviewResponse.json();
+
+            if (reviewResult.status === "success") {
+              // 將評論統計添加到產品資料中
+              setProductData(prev => ({
+                ...prev,
+                averageRating: reviewResult.data.statistics.averageRating,
+                totalReviews: reviewResult.data.statistics.totalReviews
+              }));
+            }
+          } catch (reviewErr) {
+            console.log('評論API暫不可用');
+          }
           // 設置默認選項
           if (result.data.colors && result.data.colors.length > 0) {
             setSelectedColor(result.data.colors[0]);
@@ -1517,22 +1538,29 @@ export default function PidPage({ params }) {
 
             <div className="rating">
               <div className="rating-icon-container">
-                <div className="rating-icon">
-                  <i className="fa-solid fa-star"></i>
-                </div>
-                <div className="rating-icon">
-                  <i className="fa-solid fa-star"></i>
-                </div>
-                <div className="rating-icon">
-                  <i className="fa-solid fa-star"></i>
-                </div>
-                <div className="rating-icon">
-                  <i className="fa-solid fa-star"></i>
-                </div>
-                <div className="rating-icon">
-                  <i className="fa-solid fa-star"></i>
-                </div>
-                <span className="rating-text">4.8</span>
+                {productData.totalReviews > 0 ? (
+                  // 有評論時根據評分顯示星星
+                  <>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <div key={star} className="rating-icon">
+                        <i className={`fa-${productData.averageRating >= star ? 'solid' : 'regular'} fa-star`}></i>
+                      </div>
+                    ))}
+                    <span className="rating-text">
+                      {productData.averageRating} ({productData.totalReviews}則評論)
+                    </span>
+                  </>
+                ) : (
+                  // 沒有評論時顯示空星星
+                  <>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <div key={star} className="rating-icon">
+                        <i className="fa-regular fa-star"></i>
+                      </div>
+                    ))}
+                    <span className="rating-text">0.0</span>
+                  </>
+                )}
               </div>
 
               <button
@@ -1542,10 +1570,14 @@ export default function PidPage({ params }) {
                   setShowModal(true);
                   document.body.classList.add("modal-open");
                 }}
+                disabled={!productData.totalReviews || productData.totalReviews === 0}
+                style={{
+                  opacity: (!productData.totalReviews || productData.totalReviews === 0) ? 0.5 : 1,
+                  cursor: (!productData.totalReviews || productData.totalReviews === 0) ? 'not-allowed' : 'pointer'
+                }}
               >
-                查看評論
+                {productData.totalReviews > 0 ? '查看評論' : '暫無評論'}
               </button>
-
             </div>
 
             <div className="product-description">
@@ -2140,7 +2172,6 @@ export default function PidPage({ params }) {
           </div>
           <div className="end-content-btn">
             <Link href="/organizer"><button>立即預約</button></Link>
-            
           </div>
         </div>
       </div>

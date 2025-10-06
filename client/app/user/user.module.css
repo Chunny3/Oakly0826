@@ -11,6 +11,8 @@
     /* 置中 */
     /* 上方距離 */
     padding-block: 40px;
+    /* 下方距離多一點 */
+    margin-bottom: 80px;
     /* RWD 左右留白：16px ~ 40px，會隨螢幕寬度平滑變化 */
     padding-inline: clamp(16px, 4vw, 60px);
 }
@@ -93,29 +95,66 @@
     background-color: #f0f0f0;
 }
 
-.favoritesRow {
+/* .favoritesRow {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 20px;
     border-bottom: 1px solid #9db8af;
-}
+    display: grid;
+    grid-template-columns: 140px 1fr 120px 80px;
+    140px 放圖片，1fr 放商品名，120px 放價錢，80px 放 icon 區
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #9db8af;
+} */
 
-.productName,
-.productPrice {
-    color: #494949;
+/* .productName {
+    color: #8b8b8b;
     font-weight: 600;
 }
 
+.productPrice {
+    color: #6a6a6a;
+} */
+
 .iconActions {
+    flex: 0.2;
     display: flex;
     gap: 16px;
-    font-size: 20px;
+    font-size: 22px;
+    padding: 80px 0px 70px 30px;
+
+}
+
+.heartWrapper {
+    position: relative;
+    display: inline-flex;
+    cursor: pointer;
+    font-size: 22px;
+    color: #d4a373;
 }
 
 .heart {
-    color: #d4a373;
-    cursor: pointer;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.heartEmpty {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.heartWrapper:hover .heart {
+    opacity: 0;
+    /* hover 時隱藏實心 */
+}
+
+.heartWrapper:hover .heartEmpty {
+    opacity: 1;
+    /* hover 時顯示空心 */
 }
 
 .cart {
@@ -123,110 +162,168 @@
 }
 
 
-/* 收藏文章專區 */
-
-.bookmarkRow {
+.favoritesCard {
     display: flex;
-    gap: 15px;
-    align-items: stretch;
-    /* 讓右側 .bookmarkBody 拉伸到整列高度 */
+    gap: 20px;
     padding: 20px 0;
     border-bottom: 1px solid #9db8af;
 }
 
-/* 右側文字容器：直向 flex，讓 footer 吸底 */
-.bookmarkBody {
+.favoritesCard img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.favoritesBody {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-height: 120px;
-    /* 確保有足夠高度把 footer 推到底（對齊縮圖高） */
+    justify-content: center;
 }
 
-.bookmarkIcon {
-    width: 19px;
-    height: 25px;
+.productName {
+    font-size: 16px;
+    font-weight: 600;
+    color: #8b8b8b;
+    margin-bottom: 8px;
+}
+
+.productPrice {
+    font-weight: 600;
+    color: #6a6a6a;
+    margin-bottom: 16px;
+}
+
+.addCartBtn {
+    align-self: flex-start;
+    background-color: #6c9c8f;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
     cursor: pointer;
-    align-self: center;
-    /* 單獨置中 */
-    transition: transform .1s ease;
 }
 
-.bookmarkIcon:active {
-    transform: scale(0.92);
+.addCartBtn:hover {
+    background-color: #5b887b;
 }
 
-
-.bookmarkTitle {
-    color: #88a29a;
-    font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-}
-
-.bookmark:hover {
-    color: #d4a373;
-}
-
-.bookmarkText {
-    font-size: 0.875rem;
-    color: #919191;
-    margin-bottom: 0.5rem;
-    display:
-        -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 3;
-    /* 顯示最多 3 行，超出就省略 */
-    overflow: hidden;
-    line-clamp: 3;
-    /* 標準屬性（實驗中，Firefox 將支援） */
-}
-
-.bookmarkFooter {
+/* === 價格下方：顏色 / 尺寸展示膠囊 === */
+.optionDisplay {
+    margin-top: 8px;
     display: flex;
-    justify-content: space-between;
-    font-size: .8rem;
-    margin-top: auto;
-    /* 把 footer 推到底 */
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
-.bookmarkLink {
-    text-decoration: none;
-    color: #d4a373;
-    font-weight: 500;
-
+.optionPill {
     display: inline-flex;
-    /* 讓文字與 icon 排成一列 */
     align-items: center;
-    /* 垂直置中 */
-    gap: 4px;
-    /* 文字與 icon 間距 */
+    gap: 6px;
+    padding: 4px 6px;
+    border: 1px solid #dcdcdc;
+    border-radius: 8px;
+    background: #f7f8f8;
+    /* 淺灰底，接近你截圖 */
+    color: #6b6b6b;
+    line-height: 1;
+    font-size: 12px;
+    /* 文字變小 */
 }
 
-.bookmarkLink:hover {
-    text-decoration: underline;
+.colorDotSm {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, .15);
+}
+
+/* 數量控制容器 */
+.qtyControl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    /* ← 控制數字和按鈕之間的距離，原本是 6，可以加大 */
+    margin-top: 4px;
+}
+
+/* 左右按鈕 */
+.qtyBtn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qtyBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 中間數字框 */
+.qtyBox {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 
 
-/* 手機版：側欄改到上面、去掉分隔線與間距，表單全寬 */
-@media (max-width: 768px) {
+/* 手機版 (<= 430px) */
+@media (max-width: 430px) {
+    .userContainer {
+        padding-block: 50px;
+        /* 上下間距縮小 */
+        padding-inline: 24px;
+        /* 左右固定邊距，避免太擠 */
+    }
+
     .layout {
         flex-direction: column;
-        min-width: 430px;
+        gap: 0px;
     }
 
     .sidebarWrapper {
-        margin-right: 0;
-        margin-bottom: 20px;
-        flex-basis: auto;
-        border-right: none;
-        padding-right: 0;
+        display: none;
+        /* 手機版隱藏側欄 */
     }
 
-    .formContainer {
-        max-width: 100%;
-        padding: 0 15px;
-        /* 手機左右留白 */
+    .content {
+        flex: 1;
+        min-width: 100%;
+        /* 表單內容滿版 */
     }
+
+    .avatarImg {
+        width: 120px;
+        /* 頭像縮小 */
+        height: 120px;
+    }
+
+    .formButtons {
+        margin-top: 50px;
+        /* 上方間隔加大 */
+        gap: 4px;
+        /* 兩顆按鈕之間縮小一點 */
+    }
+
+    .favoritesRow {
+        grid-template-columns: 100px 1fr;
+        /* 收藏清單：縮圖 + 內容 */
+        gap: 12px;
+    }
+
 }

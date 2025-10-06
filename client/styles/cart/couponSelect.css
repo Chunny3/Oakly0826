@@ -18,17 +18,38 @@
   background-color: white;
   padding: 20px;
   border-radius: 8px;
-  min-width: 1000px;
+  width: 825px;
   max-width: 90%;
   text-align: center;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   z-index: 1000;
+  
 }
+
 .my-coupon-line {
   margin: 20px 0;
-  width: 920px;
+  width: 785px;
   height: 1px;
   background-color: var(--color-gray-400);
+}
+
+.cart-coupon {
+  height: fit-content;
+  border: none;
+  outline: none;
+  /* 去除焦點外框 */
+  background: none;
+  /* 去除背景色 */
+  padding: 0;
+  /* 去除內距 */
+  margin: 0;
+}
+
+.cart-coupon:hover,
+.cart-coupon:focus,
+.cart-coupon:active {
+  border: none;
+  outline: none;
 }
 
 .couponButton {
@@ -51,12 +72,228 @@
   line-height: 1;
 }
 
+.coupon-select-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.coupon-select-btn {
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.coupon-select-btn:hover {
+  background: linear-gradient(135deg, #4338ca, #6d28d9);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+}
+
+.choose-coupon {
+  display: flex;
+  padding: 5px var(--card-padding-sm, 20px);
+  justify-content: space-between;
+  align-items: center;
+  color: var(--primary-05);
+  flex: 1;
+  border-radius: 10px;
+  border: 2px solid var(--color-gray-600, #ababab);
+  background-color: var(--white, #fff);
+  box-shadow: 10px 10px 35px 0 rgba(0, 0, 0, 0.25);
+}
+
+.choose-coupon button:hover {
+  background-color: var(--primary-04);
+  border: 2px solid var(--primary-04, #ababab);
+  color: var(--white);
+}
+
+.clear-coupon-btn {
+  width: 32px;
+  height: 32px;
+  background: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.3s ease;
+}
+
+.clear-coupon-btn:hover {
+  background: #dc2626;
+  transform: scale(1.1);
+}
+
+/* 優惠券容器 */
+.coupons-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 785px;
+  height: 500px;
+  overflow-y: auto;
+}
+
+/* 優惠券卡片樣式 */
+.cart-coupon {
+  position: relative;
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  margin-bottom: 15px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cart-coupon:hover {
+  border-color: #4f46e5;
+  box-shadow: 0 4px 16px rgba(79, 70, 229, 0.2);
+  transform: translateY(-2px);
+}
+
+/* 選中狀態 */
+.cart-coupon.selected {
+  border-color: #10b981;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+}
+
+/* 選中標記 */
+.selected-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  background: #10b981;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  z-index: 10;
+  animation: checkmark 0.3s ease-in-out;
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+  }
+
+  50% {
+    transform: scale(1.2);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* 彈窗底部按鈕區 */
+.coupon-modal-footer {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 20px;
+  padding: 20px 0 10px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.clear-selection-btn {
+  padding: 12px 24px;
+  background: #ffffff;
+  color: #6b7280;
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 1;
+  max-width: 150px;
+}
+
+.clear-selection-btn:hover {
+  background: #f9fafb;
+  border-color: #9ca3af;
+  color: #374151;
+}
+
+.confirm-selection-btn {
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex: 2;
+  max-width: 200px;
+}
+
+.confirm-selection-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+/* 滾動條美化 */
+.coupons-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.coupons-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 4px;
+}
+
+.coupons-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.coupons-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
 @media (max-width: 430px) {
   .my-coupon {
     min-width: 390px;
   }
+
   .my-coupon-line {
-     width: 350px;
+    width: 350px;
+  }
+
+  .coupon-modal-footer {
+    flex-direction: column;
+  }
+
+  .clear-selection-btn,
+  .confirm-selection-btn {
+    max-width: none;
+    width: 100%;
+  }
+
+  .coupon-select-container {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
-

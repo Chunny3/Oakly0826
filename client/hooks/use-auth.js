@@ -5,8 +5,8 @@ import { useContext, createContext, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 AuthContext.displayName = "AuthContext";
-const appKey = "reactLoginToken";
 // 存 user 資料的 localStorage key
+const appKey = "reactLoginToken";
 const userKey = "user";
 
 export function AuthProvider({ children }) {
@@ -15,6 +15,21 @@ export function AuthProvider({ children }) {
   const [isLoading, setIsLoading] = useState(true);
   const [item, setItem] = useState([]);
   const router = useRouter();
+
+  // 開站自動恢復登入狀態 --------------------------
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(userKey);
+      const token = localStorage.getItem(appKey);
+      if (raw && token) {
+        setUser(JSON.parse(raw)); // 從 localStorage 取出 user
+      }
+    } catch (err) {
+      console.error("恢復登入狀態失敗:", err);
+    } finally {
+      setIsLoading(false); // 一定要設，否則頁面會卡 loading
+    }
+  }, []);
 
   // register------------------------------------
   const register = async (name, email, password) => {
@@ -100,37 +115,24 @@ export function AuthProvider({ children }) {
   const logout = async () => {
     console.log("logout");
     const API = "http://localhost:3005/api/users/logout";
-    const appKey = "reactLoginToken";
-    const userKey = "user";
-    const token = localStorage.getItem(appKey);
+    
     try {
-      if (!token) throw new Error("Token 不存在");
-      const res = await fetch(API, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      const result = await res.json();
-      if (result.status == "success") {
-        const token = result.data;
-        setUser(null);
-        //localStorage.setItem(appKey, token);
-        localStorage.removeItem(appKey);
-        localStorage.removeItem(userKey);
-        router.push("/");
-        // return { success: true };
-      } else {
-        //alert(result.message)
-        // 接 吐司？
-        throw new Error(result.message); //老師版
-        //return { success: false, message: result.message };
-      }
+      await fetch(API, {
+      method: "POST",
+      credentials: "include",   // 🔑 讓 cookie 帶過去，後端才能清掉
+    });
+
+    // 清掉前端狀態
+    setUser(null);
+    localStorage.clear();
+
+    router.push("/"); // 導回首頁
     } catch (error) {
-      console.log(`解析token失敗: ${error.message}`);
+      console.log(`logout 失敗: ${error.message}`);
       setUser(null);
       localStorage.removeItem(appKey);
-      alert(error.message);
+      localStorage.removeItem(userKey);
+      // alert(error.message);
     }
   };
 
@@ -156,7 +158,9 @@ export function AuthProvider({ children }) {
       if (result.status === "success") {
         // 更新前端 user 狀態
         // const newUser = { ...user, ...data };
-        const newUser = result.data?.user ? result.data.user : { ...user, ...data };
+        const newUser = result.data?.user
+          ? result.data.user
+          : { ...user, ...data };
         setUser(newUser);
         localStorage.setItem(userKey, JSON.stringify(newUser));
         return { success: true, message: result.message };
@@ -205,7 +209,9 @@ export function AuthProvider({ children }) {
         // 若後端回傳最新 user 或 avatar 路徑，就同步更新前端
         const newUser = result.data?.user
           ? result.data.user
-          : (result.data?.avatar ? { ...user, avatar: result.data.avatar } : user);
+          : result.data?.avatar
+          ? { ...user, avatar: result.data.avatar }
+          : user;
 
         setUser(newUser);
         localStorage.setItem(userKey, JSON.stringify(newUser));
@@ -219,20 +225,27 @@ export function AuthProvider({ children }) {
 
   // 更新訂購人跟收件人---------------------------
   const updateUser = (newData) => {
-    // newData 可以是 { buyer } 或 { recipient }，更新第二次會覆蓋
-    const updateUser = { ...user };
+    const savedUser = localStorage.getItem(userKey);
+    const currentUser = savedUser ? JSON.parse(savedUser) : user;
+
+    // 創建一個新的物件來避免修改原始資料
+    const updateUser = { ...currentUser };
 
     if (newData.buyer) {
       updateUser.buyer = newData.buyer;
-    } else if (!updateUser.buyer) {
-      // 如果 user.buyer 不存在，就用原本 user 的資料當 buyer 初始值
+    } else if (
+      !updateUser.buyer ||
+      Object.keys(updateUser.buyer).length === 0
+    ) {
+      // 只有在完全沒有 buyer 資料時才創建預設值
+      // 而且要檢查是否真的是空物件
       updateUser.buyer = {
-        name: user.name || "",
-        phone: user.phone || "",
-        postcode: user.postcode || "",
-        city: user.city || "",
-        address: user.address || "",
-        email: user.email || "",
+        name: currentUser.name || "",
+        phone: currentUser.phone || "",
+        postcode: currentUser.postcode || "",
+        city: currentUser.city || "",
+        address: currentUser.address || "",
+        email: currentUser.email || "",
       };
     }
 
@@ -242,7 +255,7 @@ export function AuthProvider({ children }) {
     }
     setUser(updateUser);
     localStorage.setItem(userKey, JSON.stringify(updateUser));
-  }
+  };
 
   // 保護頁面------------------------------------
   // useEffect(() => {
@@ -280,7 +293,7 @@ export function AuthProvider({ children }) {
           //alert(result.message);
           setIsLoading(false);
           // setUser(null);
-          // localStorage.removeItem(appKey);
+          localStorage.clear();
           // router.push('/auth/login');
           // 接 吐司？
         }
@@ -297,12 +310,116 @@ export function AuthProvider({ children }) {
   // 收藏 API ------------------------------
   const API_FAVORITES = "http://localhost:3005/api/users/favorites";
 
+  // 取得收藏清單
+  const getFavorites = async () => {
+    const token = localStorage.getItem(appKey);
+
+    try {
+      const res = await fetch(API_FAVORITES, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await res.json();
+      if (result.status === "success") {
+        return { success: true, data: result.data };
+      }
+      return { success: false, message: result.message };
+    } catch (err) {
+      console.error(err);
+      return { success: false, message: "伺服器錯誤" };
+    }
+  };
+
+  // 加入收藏
+  const addFavorite = async (productId, colorId, sizeId, colorName, quantity = 1) => {
+    const token = localStorage.getItem(appKey);
+
+    try {
+      const res = await fetch(API_FAVORITES, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ productId, colorId, sizeId, colorName, quantity  }),
+      });
+      return await res.json();
+    } catch (err) {
+      console.error(err);
+      return { success: false, message: "伺服器錯誤" };
+    }
+  };
+
+  // 取消收藏
+  const removeFavorite = async (productId, colorId, sizeId) => {
+    const token = localStorage.getItem(appKey);
+
+    try {
+      const res = await fetch(`${API_FAVORITES}/${productId}/${colorId}/${sizeId}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const result = await res.json();
+      return result;
+    } catch (err) {
+      console.error(err);
+      return { success: false, message: "伺服器錯誤" };
+    }
+  };
+  // 收藏數量調整
+  const updateFavoriteQty = async (productId, colorId, sizeId, quantity) => {
+  const token = localStorage.getItem(appKey);
+  try {
+    const res = await fetch(`${API_FAVORITES}/${productId}/${colorId}/${sizeId}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ quantity }),
+    });
+    return await res.json();
+  } catch (err) {
+    console.error("updateFavoriteQty error:", err);
+    return { status: "error", message: "伺服器錯誤" };
+  }
+};
+
+
+  // login with Google------------------------------------
+  const loginWithGoogle = async (token, user) => {
+    try {
+      // 存到狀態
+      setUser(user);
+      // 存到 localStorage
+      localStorage.setItem(appKey, token);
+      localStorage.setItem(userKey, JSON.stringify(user));
+      return { success: true, message: "Google 登入成功" };
+    } catch (error) {
+      console.error(error);
+      return { success: false, message: "Google 登入失敗" };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
-        user, register, login, logout, isLoading, users,
-        updateUser, updateUserEdit, updateUserPassword, updateUserAvatar
-      }}>
+        user,
+        register,
+        login,
+        logout,
+        isLoading,
+        users,
+        updateUser,
+        updateUserEdit,
+        updateUserPassword,
+        updateUserAvatar,
+        getFavorites,
+        addFavorite,
+        removeFavorite,
+        loginWithGoogle,
+        updateFavoriteQty
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

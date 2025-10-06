@@ -24,6 +24,7 @@ const AgentDashboard = ({ user, onLogout }) => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const processedTransfers = useRef(new Set()); 
 
   const messagesEndRef = useRef(null);
   const handleLogout = () => setShowLogoutConfirm(true);
@@ -55,6 +56,7 @@ const AgentDashboard = ({ user, onLogout }) => {
 
     newSocket.on('agent_connected', (data) => {
       console.log('客服連接成功:', data);
+      processedTransfers.current.clear();
 
       // 請求載入進行中的對話
       newSocket.emit('get_active_chats', { agentId: user.id });
@@ -87,38 +89,62 @@ const AgentDashboard = ({ user, onLogout }) => {
       playNotificationSound();
     });
 
-    // 聊天被接受
     newSocket.on('chat_accepted', (data) => {
       console.log('聊天被接受:', data);
-
-      const customerName = data.customerName ||
-        waitingCustomers.find(c => c.id === data.roomId)?.customer_name ||
-        '客戶';
-
+      
       const chatInfo = {
         roomId: data.roomId,
         agentId: data.agentId,
-        customerName: customerName, // 使用上面計算的 customerName
+        customerName: data.customerName || '客戶',
         status: 'active'
       };
-
-      console.log('建立的聊天資訊:', chatInfo);
-
+    
       setActiveChats(prev => {
-        console.log('更新前的 activeChats:', prev);
-        const updated = [...prev, chatInfo];
-        console.log('更新後的 activeChats:', updated);
-        return updated;
+        const newList = prev.filter(chat => chat.roomId !== data.roomId);
+        return [...newList, chatInfo];
       });
-
+    
       setSelectedChat(chatInfo);
-      setMessages(data.messages || []);
-      setAgentStatus('busy');
-
-      // 從等待列表中移除
-      setWaitingCustomers(prev =>
-        prev.filter(customer => customer.id !== data.roomId)
+      
+      // 🔥 過濾機器人訊息，只保留客戶和客服的訊息
+      const filteredMessages = (data.messages || []).filter(msg => 
+        msg.sender_type === 'customer' || msg.sender_type === 'agent'
       );
+      
+      setMessages(filteredMessages);
+      setAgentStatus('busy');
+    
+      // 從等待列表移除
+      setWaitingCustomers(prev =>
+        prev.filter(customer => {
+          const customerId = String(customer.id);
+          const roomIdStr = String(data.roomId);
+          return customerId !== `human_${roomIdStr}` && customerId !== roomIdStr;
+        })
+      );
+    });
+
+    newSocket.on('new_transfer_request', (transferData) => {
+      if (processedTransfers.current.has(transferData.roomId)) {
+        console.log('轉接請求已處理過，跳過:', transferData.roomId);
+        return;
+      }
+      
+      processedTransfers.current.add(transferData.roomId);
+      
+      alert('收到轉接請求！');
+      
+      const transferCustomer = {
+        id: transferData.roomId,
+        customer_name: transferData.customer.userName,
+        is_authenticated: transferData.customer.isAuthenticated,
+        initial_message: '從機器人轉接：' + transferData.transferReason,
+        created_at: new Date().toISOString(),
+        chat_history: transferData.chatHistory
+      };
+    
+      setWaitingCustomers(prev => [transferCustomer, ...prev]);
+      playNotificationSound();
     });
 
     // 聊天被其他客服接受
@@ -148,32 +174,46 @@ const AgentDashboard = ({ user, onLogout }) => {
         playNotificationSound();
       }
     });
-
+    // 監聽轉接被其他客服接受
+    newSocket.on('transfer_accepted_by_other', (data) => {
+      setWaitingCustomers(prev =>
+        prev.filter(customer => customer.id !== data.roomId)
+      );
+    });
     // 聊天結束
     newSocket.on('chat_ended', (data) => {
+      console.log('聊天已結束:', data);
+      
+      // 從進行中的對話列表移除
       setActiveChats(prev =>
-        prev.filter(chat => chat.roomId !== data.roomId)
+        prev.filter(chat => chat.roomId != data.roomId)
       );
-
-      if (selectedChat?.roomId === data.roomId) {
+    
+      // 🔥 關鍵修正：如果當前選中的是被結束的聊天，立即清空右側畫面
+      if (selectedChat && selectedChat.roomId == data.roomId) {
         setSelectedChat(null);
         setMessages([]);
       }
-
+    
+      // 更新客服狀態為可用
       setAgentStatus('available');
     });
     newSocket.on('error', (error) => {
-      // 只有在真正有錯誤訊息時才顯示
-      if (error && error.message) {
+      console.log('收到錯誤事件:', error);
+      
+      // 檢查錯誤是否有實際內容
+      if (error && typeof error === 'object' && error.message && error.message.trim()) {
         console.error('Agent chat error:', error);
         alert(error.message);
       } else {
-        console.log('收到空的錯誤物件，忽略');
+        console.log('收到空的或無效的錯誤物件，忽略:', error);
       }
     });
     setSocket(newSocket);
 
     return () => {
+      processedTransfers.current.clear(); 
+
       newSocket.close();
     };
   }, [user]);
@@ -205,21 +245,49 @@ const AgentDashboard = ({ user, onLogout }) => {
   const acceptChat = (customer) => {
     if (!socket) return;
 
-    socket.emit('accept_chat', {
-      roomId: customer.id,
-      agentId: user.id
-    });
-  };
-
-  const selectChat = (chat) => {
-    setSelectedChat(chat);
-
-    // 載入該聊天室的消息
-    if (socket) {
-      // 這裡可以請求歷史消息，目前消息已在接受聊天時載入
+    if (customer.chat_history) {
+      socket.emit('accept_transfer', {
+        roomId: customer.id,
+        agentId: user.id,
+        agentName: user.name
+      });
+    } else {
+      socket.emit('accept_chat', {
+        roomId: customer.id,
+        agentId: user.id
+      });
     }
   };
-
+  const selectChat = async (chat) => {
+    setSelectedChat(chat);
+  
+    // 載入該聊天室的歷史消息並過濾
+    if (socket) {
+      try {
+        const response = await fetch(`http://localhost:3005/api/chat/messages/${chat.roomId}`);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+          // 🔥 強化過濾邏輯 - 多重條件檢查
+          const filteredMessages = result.data.filter(msg => {
+            // 排除機器人訊息的多種判斷方式
+            if (msg.sender_type === 'bot') return false;
+            if (msg.sender_id === 'bot') return false;
+            if (msg.message && msg.message.includes('Oakly 智能助手')) return false;
+            if (msg.message && msg.message.includes('智能助手')) return false;
+            if (msg.message && msg.message.includes('我可以幫您了解產品資訊')) return false;
+            
+            // 只保留客戶和客服訊息
+            return msg.sender_type === 'customer' || msg.sender_type === 'agent';
+          });
+          
+          setMessages(filteredMessages);
+        }
+      } catch (error) {
+        console.error('載入歷史消息失敗:', error);
+      }
+    }
+  };
   const sendMessage = () => {
     if (!currentMessage.trim() || !socket || !selectedChat) return;
 
@@ -262,9 +330,17 @@ const AgentDashboard = ({ user, onLogout }) => {
 
   const endChat = () => {
     if (!socket || !selectedChat) return;
-
+  
     if (confirm('確定要結束此對話嗎？')) {
       socket.emit('end_chat', { roomId: selectedChat.roomId });
+      
+      // 立即清理本地狀態
+      setActiveChats(prev =>
+        prev.filter(chat => chat.roomId !== selectedChat.roomId)
+      );
+      setSelectedChat(null);
+      setMessages([]);
+      setAgentStatus('available');
     }
   };
 
@@ -466,7 +542,7 @@ const AgentDashboard = ({ user, onLogout }) => {
 
         {/* 主聊天區域 */}
         <div className="chat-area">
-          {selectedChat ? (
+        {selectedChat && activeChats.some(chat => chat.roomId === selectedChat.roomId) ? (
             <>
               <div className="chat-header">
                 <div className="chat-title">
@@ -487,8 +563,8 @@ const AgentDashboard = ({ user, onLogout }) => {
                   console.log('渲染訊息:', message.id || index, message.message); // 加這行除錯
                   return (
                     <div
-                      key={message.id || `msg_${index}`} // 改善 key 的唯一性
-                      className={`message ${message.sender_type === 'agent' ? 'sent' : 'received'}`}
+                    key={`agent_msg_${message.id || index}_${message.created_at}`}
+                                        className={`message ${message.sender_type === 'agent' ? 'sent' : 'received'}`}
                     >
                       <div className="message-content">
                         <div className="sender-info">
@@ -565,11 +641,11 @@ const AgentDashboard = ({ user, onLogout }) => {
                     onClick={() => fileInputRef.current?.click()}
                     disabled={isUploading || !selectedChat}
                     className="upload-btn"
-                    style={{background: 'transparent', border: 'none'}}
+                    style={{ background: 'transparent', border: 'none' }}
 
                   >
-  <i className="fa-solid fa-images fa-2x" style={{color: '#cccccc'}}></i>
-  </button>
+                    <i className="fa-solid fa-images fa-2x" style={{ color: '#cccccc' }}></i>
+                  </button>
                   <button
                     onClick={sendMessage}
                     disabled={!currentMessage.trim()}

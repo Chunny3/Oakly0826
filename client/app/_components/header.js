@@ -82,12 +82,12 @@ export default function Header() {
   };
 
   // 登入/註冊頁，不顯示 header
-  if (
-    pathname.startsWith("/auth/login") ||
-    pathname.startsWith("/auth/register")
-  ) {
-    return null;
-  }
+  // if (
+  //   pathname.startsWith("/auth/login") ||
+  //   pathname.startsWith("/auth/register")
+  // ) {
+  //   return null;
+  // }
 
   return (
     <div className="container-fluid header">
@@ -97,15 +97,15 @@ export default function Header() {
         </Link>
 
         <div className="menu">
-          <Link className="nav-items" href="/products">
+          <a className="nav-items" href="/products" onClick={() => window.location.reload()}>
             <h6>商品列表</h6>
-          </Link>
+          </a>
           <Link className="nav-items" href="/organizer">
             <h6>預約整理師</h6>
           </Link>
-          {/* <Link className="nav-items" href="/article">
-            <h6>精選文章</h6>
-          </Link> */}
+          <Link className="nav-items" href="/coupon">
+            <h6>優惠專區</h6>
+          </Link>
           {/* <Link className="nav-items" href="/faq">
             <h6>常見問題</h6>
           </Link> */}
@@ -222,9 +222,8 @@ export default function Header() {
                     <div className={styles.sidebar}>
                       <Link
                         href="/user/edit"
-                        className={`${styles.user} ${
-                          pathname === "/user/edit" ? styles.active : ""
-                        }`}
+                        className={`${styles.user} ${pathname === "/user/edit" ? styles.active : ""
+                          }`}
                       >
                         <i className="fas fa-user"></i>
                         我的資料
@@ -232,9 +231,8 @@ export default function Header() {
 
                       <Link
                         href="/user/order"
-                        className={`${styles.order} ${
-                          pathname === "/user/order" ? styles.active : ""
-                        }`}
+                        className={`${styles.order} ${pathname === "/user/order" ? styles.active : ""
+                          }`}
                       >
                         <i className="fas fa-list-alt"></i>
                         訂單查詢
@@ -242,9 +240,8 @@ export default function Header() {
 
                       <Link
                         href="/user/coupon"
-                        className={`${styles.coupon} ${
-                          pathname === "/user/coupon" ? styles.active : ""
-                        }`}
+                        className={`${styles.coupon} ${pathname === "/user/coupon" ? styles.active : ""
+                          }`}
                       >
                         <i className="fas fa-ticket-alt"></i>
                         我的優惠券
@@ -252,9 +249,8 @@ export default function Header() {
 
                       <Link
                         href="/user/favorites"
-                        className={`${styles.heart} ${
-                          pathname === "/user/favorites" ? styles.active : ""
-                        }`}
+                        className={`${styles.heart} ${pathname === "/user/favorites" ? styles.active : ""
+                          }`}
                       >
                         <i className="fas fa-heart"></i>
                         願望清單
@@ -262,20 +258,18 @@ export default function Header() {
 
                       <Link
                         href="/user/bookmarks"
-                        className={`${styles.bookmark} ${
-                          pathname === "/user/bookmarks" ? styles.active : ""
-                        }`}
+                        className={`${styles.bookmark} ${pathname === "/user/bookmarks" ? styles.active : ""
+                          }`}
                       >
                         <i className="fas fa-bookmark"></i>
                         收藏文章
                       </Link>
                       <Link
                         href="/user/organizer"
-                        className={`${styles.reservation} ${
-                          pathname.startsWith("/user/organizer")
+                        className={`${styles.reservation} ${pathname.startsWith("/user/organizer")
                             ? styles.active
                             : ""
-                        }`}
+                          }`}
                       >
                         <i className="fas fa-calendar-alt"></i>
                         預約紀錄

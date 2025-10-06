@@ -1,7 +1,16 @@
-import CanUseLeft from './CanUseLeft'
-import styles from '@/styles/userCoupon/userCoupon.module.css'
+import Link from "next/link";
+import CanUseLeft from "./CanUseLeft";
+import styles from "@/styles/userCoupon/userCoupon.module.css";
 
-export default function CanUseCoupon({ tag, name, smallCost, date, costCate1, costCate2, cost }) {
+export default function CanUseCoupon({
+  tag,
+  name,
+  smallCost,
+  date,
+  costCate1,
+  costCate2,
+  cost,
+}) {
   return (
     <>
       <div
@@ -22,8 +31,10 @@ export default function CanUseCoupon({ tag, name, smallCost, date, costCate1, co
           <span className={styles.cost}>{cost}</span>
           {costCate2}
         </h3>
-        <CanUseLeft />
+        <Link href="/products">
+          <CanUseLeft />
+        </Link>
       </div>
     </>
-  )
+  );
 }

@@ -4,6 +4,8 @@ import multer from "multer";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
 import fs from "fs";
+import jwt from "jsonwebtoken";
+
 
 // 設定 multer 儲存配置
 const storage = multer.diskStorage({
@@ -24,12 +26,36 @@ const upload = multer({
 });
 
 const router = express.Router();
+const secretKey = process.env.JWT_SECRET_KEY;
+
+// 後端檢查token
+function checkToken(req, res, next) {
+  let token = req.get("Authorization");
+  if (token && token.includes("Bearer ")) {
+    token = token.slice(7);
+    jwt.verify(token, secretKey, (error, decoded) => {
+      if (error) {
+        return res.status(401).json({
+          status: "error",
+          message: "登入驗證失效，請重新登入",
+        });
+      }
+      req.decoded = decoded;
+      next();
+    });
+  } else {
+    res.status(401).json({
+      status: "error",
+      message: "無登入驗證資訊，請重新登入",
+    });
+  }
+}
 
 //-------------------------------------------------------------------------------------
-//GET /api/user/organizers/:userId - 取得user的預約諮詢頁列表
-router.get("/:userId", async (req, res) => {
+//GET /api/user/organizers - 取得user的預約諮詢頁列表
+router.get("/", checkToken, async (req, res) => {
   try {
-    const { userId } = req.params; // 取得路由參數
+    const userId = req.decoded.id; // 從 token 取得
 
     const sql = `SELECT 
     CONCAT('#', LPAD(b.id, 7, '0')) as booking_id, 
@@ -63,11 +89,12 @@ router.get("/:userId", async (req, res) => {
   }
 });
 
-//GET /api/user/organizers/:userId/:bookingId - 取得使用者的預約資訊詳細頁
-router.get("/:userId/:bookingId", async (req, res) => {
+//GET /api/user/organizers/:bookingId - 取得使用者的預約資訊詳細頁
+router.get("/:bookingId", checkToken, async (req, res) => {
 
   try {
-    const { userId, bookingId } = req.params; // 取得路由參數
+    const userId = req.decoded.id; // 從 token 取得真正的 userId
+    const { bookingId } = req.params;
 
     const sql = `
     SELECT 
@@ -141,10 +168,10 @@ router.get("/:userId/:bookingId", async (req, res) => {
 });
 
 //POST /api/user/organizers/add - (新增) 預約諮詢表單
-router.post("/add", upload.array("photos", 4), async (req, res) => {
+router.post("/add", checkToken, upload.array("photos", 4), async (req, res) => {
   try {
+    const userId = req.decoded.id; // 從 token 取得
     const {
-      user_id,
       city,
       district,
       address,
@@ -158,7 +185,7 @@ router.post("/add", upload.array("photos", 4), async (req, res) => {
                  VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
     const [bookingResult] = await connection.execute(sql, [
-      user_id,
+      userId,
       city,
       district,
       address,
@@ -198,13 +225,14 @@ router.post("/add", upload.array("photos", 4), async (req, res) => {
   }
 });
 
-//PUT /api/user/organizers/:userId/:bookingId - ( 編輯 ) 預約資訊
+//PUT /api/user/organizers/:bookingId - ( 編輯 ) 預約資訊
 router.put(
-  "/:userId/:bookingId",
+  "/:bookingId", checkToken,
   upload.array("photos", 4),
   async (req, res) => {
     try {
-      const { userId, bookingId } = req.params;
+      const userId = req.decoded.id; // 從 token 取得
+      const { bookingId } = req.params;
       const {
         city,
         district,
@@ -306,10 +334,11 @@ router.put(
   }
 );
 
-//DELETE /api/user/organizers/:userId/:bookingId - (取消) 預約資訊
-router.delete("/:userId/:bookingId", async (req, res) => {
+//DELETE /api/user/organizers/:bookingId - (取消) 預約資訊
+router.delete("/:bookingId",checkToken, async (req, res) => {
   try {
-    const { userId, bookingId } = req.params;
+    const userId = req.decoded.id; // 從 token 取得
+    const { bookingId } = req.params;
 
     // 步驟1: 檢查預約是否存在且屬於該用戶
     const checkSql = `

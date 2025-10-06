@@ -52,21 +52,27 @@ export function CartProvider({ children }) {
   };
 
   // 處理新增
-  const onAdd = (product) => {
+  const onAdd = (product,quantity) => {
     // 先判斷此商品是否已經在購物車
     const foundIndex = items.findIndex((v) => v.id === product.id);
+
+    let nextItems;
 
     // 如果有找到
     if (foundIndex !== -1) {
       // 如果有找到 -> 做遞增
-      onIncrease(product.id);
+      nextItems = items.map((item, index) => {
+        if (index === foundIndex) {
+          return { ...item, quantity: item.quantity + quantity };
+        }
+        return item;
+      });
+      setItems(nextItems);
     } else {
       // 如果沒找到 -> 做新加入
       // 先寫出要新增的物件值，因為商品(product)和購物車項目(cartItem)間差了一個數量(count)屬性，預設為 1
-      const newItem = { ...product, quantity: 1 };
-      // 1 // 2
-      const nextItems = [newItem, ...items];
-      // 3
+      const newItem = { ...product, quantity };
+      nextItems = [newItem, ...items];
       setItems(nextItems);
     }
   };
@@ -86,6 +92,13 @@ export function CartProvider({ children }) {
   // 計算總數量 (reduce 是陣列累加/歸納的迭代方式)
   const totalQty = items.reduce((acc, v) => acc + v.quantity, 0);
   const totalAmount = items.reduce((acc, v) => acc + v.quantity * v.price, 0);
+
+  // 儲存 totalAmount 到 localStorage
+  useEffect(() => {
+    if (totalAmount !== undefined && totalAmount !== null) {
+      localStorage.setItem("totalAmount", totalAmount.toString());
+    }
+  }, [totalAmount]);
 
   // 統一的 localStorage 同步化處理
   useEffect(() => {
@@ -145,7 +158,7 @@ export function CartProvider({ children }) {
         items,
         totalAmount,
         totalQty,
-        addToCart: onAdd, 
+        addToCart: onAdd,
         onDecrease,
         onIncrease,
         onRemove,

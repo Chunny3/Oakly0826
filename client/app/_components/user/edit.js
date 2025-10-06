@@ -1,8 +1,3 @@
-//         <>
-//             <h1>登入狀態 stauts - edit</h1>
-//             <p>預計要放大頭照跟名稱</p>
-//         </>
-
 'use client'
 
 import styles from '@/app/user/user.module.css'
@@ -52,6 +47,45 @@ export default function UserEditForm() {
     const [avatarPreview, setAvatarPreview] = useState(null);
     const [errors, setErrors] = useState({})
     const [saving, setSaving] = useState(false)
+    // 下拉式選單用
+    const [twCities, setTwCities] = useState(null)
+    const [geoLoading, setGeoLoading] = useState(true)
+    const [geoError, setGeoError] = useState('')
+
+    // cities 下拉（直接從陣列取 name）
+    const cities = Array.isArray(twCities)
+        ? twCities.map(c => ({ value: c.name, label: c.name }))
+        : []
+
+    // 找出目前選到的城市
+    const selectedCity = Array.isArray(twCities)
+        ? twCities.find(c => c.name === city)
+        : null
+
+    // districts 下拉（顯示 區名 + 郵遞區號，但送出仍是區名）
+    const districts = selectedCity
+        ? selectedCity.districts.map(d => ({
+            value: d.name,                 
+            label: d.name
+        }))
+        : []
+
+    // 下拉式選單
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await fetch('/TwCities.json') // 放 public/ 就用這個路徑
+                if (!res.ok) throw new Error('HTTP ' + res.status)
+                const data = await res.json()
+                setTwCities(data)
+            } catch (err) {
+                setGeoError('無法載入縣市/地區資料')
+            } finally {
+                setGeoLoading(false)
+            }
+        }
+        load()
+    }, [])
 
     // 接上面新增頭像
     useEffect(() => {
@@ -77,14 +111,21 @@ export default function UserEditForm() {
         setPassword('')     // ✅ 密碼不回填
         setPassword2('')
     }, [user])
-    // 城市、地區選單
-    const cities = [{ value: '臺北市', label: '臺北市' }, { value: '新北市', label: '新北市' }]
-    //「地區選項陣列」用 districts 這個名稱，避免和 DB 欄位 area 混淆
-    const districts = city === '臺北市'
-        ? ['中正區', '大安區', '信義區'].map(v => ({ value: v, label: v }))
-        : city === '新北市'
-            ? ['板橋區', '新莊區', '中和區'].map(v => ({ value: v, label: v }))
-            : []
+
+    // 載入後自動回填（避免使用者資料被清空）
+    useEffect(() => {
+        if (!user || !Array.isArray(twCities)) return
+        // 補 city
+        if (!city && user.city && twCities.some(c => c.name === user.city)) {
+            setCity(user.city)
+        }
+        // 補 district
+        const prefer = user.area ?? user.district
+        const sc = twCities.find(c => c.name === (city || user.city))
+        if (!district && prefer && sc?.districts?.some(d => d.name === prefer)) {
+            setDistrict(prefer)
+        }
+    }, [user, twCities])
 
     // 表單送出
     const handleSubmit = async (e) => {
@@ -180,7 +221,8 @@ export default function UserEditForm() {
                             value={name} onChange={e => setName(e.target.value)} />
 
                         <UserTextInput id="birth" label="生日" type="date" required
-                            value={birthday} onChange={e => setBirthday(e.target.value)} />
+                            value={birthday} onChange={e => setBirthday(e.target.value)} 
+                            max={new Date().toISOString().split("T")[0]} />
 
                         <UserTextInput id="phone" label="電話" type="tel" required
                             value={phone} onChange={e => setPhone(e.target.value)} />

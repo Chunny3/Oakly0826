@@ -84,6 +84,17 @@
     border-radius: 15px;
     background-color: var(--secondary-3, #f0d2bc);
 }
+.orange-side.fin {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 32px 48px;
+    gap: 50px;
+    justify-content: flex-end;
+    box-shadow: none;
+    border-radius: 15px;
+    background-color: var(--secondary-3, #f0d2bc);
+}
 
 .gray-side {
     width: 100%;

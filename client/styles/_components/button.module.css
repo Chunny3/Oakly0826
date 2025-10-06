@@ -9,6 +9,7 @@
   /* height: 44px;         想固定高度就加這行；不要固定就刪掉 */
   cursor: pointer; /* 游標小手 */
   /* border-radius: 1px; */
+  transition: 0.3s all ease-in;
 }
 
 /* variant */
@@ -39,5 +40,12 @@
 @media (max-width: 576px) {
   .btn {
     width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .btnGroup {
+    margin-top: 40px;   /* 上方間隔加大 */
+    gap: 16px;           /* 兩顆按鈕之間縮小一點 */
   }
 }

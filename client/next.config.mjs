@@ -22,6 +22,16 @@ const nextConfig = {
     });
     return config;
   },
+  // 🔥 加這段 rewrites
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",          // 前端呼叫 /api/xxx
+        destination: "http://localhost:3005/api/:path*", // 代理到後端
+      },
+    ];
+  },
 };
+
 
 export default nextConfig;

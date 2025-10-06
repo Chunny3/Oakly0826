@@ -7,6 +7,7 @@ import styles from '../auth.module.css'
 // 共用元件
 import UserTextInput from '@/app/_components/UserTextInput'
 import Button from '@/app/_components/Button'
+import GoogleLoginButton from '@/app/_components/user/GoogleLoginButton'
 
 
 
@@ -71,6 +72,15 @@ export default function RegisterPage() {
 
                     {/* <button className={styles.btnPrimary} type="submit">註冊</button> */}
                     <Button type="submit" variant="primary01" size="userlg" disabled={loading} >{loading ? '送出中…' : '註冊'}</Button>
+
+                    <div className={styles.divider}><span>or</span></div>
+                    
+                    <GoogleLoginButton
+                        onSuccess={({ token, user }) => {
+                            loginWithGoogle(token, user)   // ✅ 呼叫 use-auth.js 新增的函式
+                            router.push("/")    // ✅ 成功後導頁
+                        }}
+                    />
 
                     <div className="mt-3" style={{ color: '#919191' }}>
                         已經有帳號了？<Link href="/auth/login" style={{ color: '#5b887b' }}>登入會員</Link>

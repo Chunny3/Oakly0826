@@ -36,10 +36,10 @@ export default function UserSidebarPage() {
         願望清單
       </Link>
 
-      <Link href="/user/bookmarks" className={`${styles.bookmark} ${pathname === '/user/bookmarks' ? styles.active : ''}`}>
+      {/* <Link href="/user/bookmarks" className={`${styles.bookmark} ${pathname === '/user/bookmarks' ? styles.active : ''}`}>
         <i className="fas fa-bookmark"></i>
         收藏文章
-      </Link>
+      </Link> */}
       <Link href="/user/organizer" className={`${styles.reservation} ${pathname.startsWith('/user/organizer') ? styles.active : ''}`}>
         <i className="fas fa-calendar-alt"></i>
         預約紀錄

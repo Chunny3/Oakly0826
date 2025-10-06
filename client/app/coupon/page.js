@@ -1,6 +1,7 @@
 "use client";
 
 import { use, useEffect, useState } from "react";
+import Link from 'next/link'  // Next.js
 // 針對單一頁面使用css modules技術
 import styles from "@/styles/coupon/coupon.module.css";
 
@@ -12,6 +13,11 @@ import CouponCard from "./_components/CouponCard";
 import MemberCard from "./_components/MemberCard";
 import { useRouter } from "next/navigation";
 
+// toast
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 export default function CouponPage() {
   const router = useRouter();
   const [coupons, setCoupons] = useState([]);
@@ -19,36 +25,33 @@ export default function CouponPage() {
   const handleClaimCoupon = async (couponId) => {
     // 領取時的登入檢查
     const token = localStorage.getItem("reactLoginToken");
-    const userStr = localStorage.getItem("user");
 
     //沒登入的跳轉
-    if (!token || !userStr) {
+    if (!token) {
       alert("請先登入");
       router.push("/auth/login");
       return;
     }
 
-    const user = JSON.parse(userStr);
-    const userId = user.id;
-
     try {
-      const result = await fetch(
-        `http://localhost:3005/api/user/coupons/${userId}/${couponId}`,
-        {
-          method: "POST",
+      const result = await fetch(`http://localhost:3005/api/user/coupons/${couponId}`, {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-      );
+      });
       const data = await result.json();
       if (data.status === "success") {
-        alert("領取成功");
+        toast.success("領取成功");
       } else {
-        alert(data.message);
+        toast.error(data.message);
       }
     } catch (err) {
       console.log("優惠券領取失敗", err);
     }
   };
 
+  //顯示優惠券
   useEffect(() => {
     const fetchCoupons = async () => {
       try {
@@ -63,10 +66,33 @@ export default function CouponPage() {
     fetchCoupons();
   }, []);
 
-  useEffect(() => {
-    //要寫
-  });
-
+  const faqDatas = [
+    {
+      id: 1,
+      question: "Q1. 如何領取優惠券？",
+      answer: "A：只要點擊卡片上的「立即領取」按鈕，登入後就能將優惠加入帳戶，隨時使用不漏接。"
+    },
+    {
+      id: 2,
+      question: "Q2. 優惠券怎麼使用？",
+      answer: "A：結帳時系統會自動為你套用符合條件的優惠券，也可以在購物車中自行挑選要使用的券。"
+    },
+    {
+      id: 3,
+      question: "Q3. 優惠券有使用期限嗎？",
+      answer: "A：有的，每張券的有效期限會標示在券上，我們會適時提醒你使用，以免錯過折扣喔。"
+    },
+    {
+      id: 4,
+      question: "Q4. 還沒註冊會員可以領券嗎？",
+      answer: "A：部分優惠券為會員限定，我們建議您免費註冊，即可享有完整的領券與回饋權益。"
+    },
+    {
+      id: 5,
+      question: "Q5. 已領的優惠券去哪裡看？",
+      answer: "A：登入帳戶後，進入「我的帳戶」中的「我的優惠券」，即可查看所有已領取與可使用的優惠券。"
+    },
+  ]
   return (
     <>
       <section
@@ -97,13 +123,12 @@ export default function CouponPage() {
 {(coupons || []).map((coupon) => (
                 <CouponCard
                   key={coupon.id}
-                  tag={`適用${
-                    coupon.category_ids
-                      ? coupon.category_ids.split(",").length === 6
-                        ? "全站商品"
-                        : `${coupon.category_names}類`
-                      : "未分類"
-                  }`}
+                  tag={`適用${coupon.category_ids
+                    ? coupon.category_ids.split(",").length === 6
+                      ? "全站商品"
+                      : `${coupon.category_names}類`
+                    : "未分類"
+                    }`}
                   date={`領取後 ${coupon.valid_days} 天有效`}
                   discountNumber={
                     coupon.discount_type === 2
@@ -177,7 +202,9 @@ export default function CouponPage() {
                 }
               />
             </div>
-            <GreenBorderButton>加入會員，展開旅程</GreenBorderButton>
+            <Link href="/user/edit">
+              <GreenBorderButton>加入會員，展開旅程</GreenBorderButton>
+            </Link>
           </div>
         </div>
       </section>
@@ -189,30 +216,25 @@ export default function CouponPage() {
               我們為你整理了使用上的小提醒
             </h2>
             <div className="d-flex gap-lg flex-column w-100">
-              <QuizBox
-                question="Q1. 如何領取優惠券？"
-                answer="A：只要點擊卡片上的「立即領取」按鈕，登入後就能將優惠加入帳戶，隨時使用不漏接。"
-              />
-              <QuizBox
-                question="Q2. 優惠券怎麼使用？"
-                answer="A：結帳時系統會自動為你套用符合條件的優惠券，也可以在購物車中自行挑選要使用的券。"
-              />
-              <QuizBox
-                question="Q3. 優惠券有使用期限嗎？"
-                answer="A：只要點擊卡片上的「立即領取」按鈕，登入後就能將優惠加入帳戶，隨時使用不漏接。"
-              />
-              <QuizBox
-                question="Q4. 還沒註冊會員可以領券嗎？"
-                answer="A：部分優惠券為會員限定，我們建議您免費註冊，即可享有完整的領券與回饋權益。"
-              />
-              <QuizBox
-                question="Q5. 已領的優惠券去哪裡看？"
-                answer="A：登入帳戶後，進入「我的帳戶」中的「我的優惠券」，即可查看所有已領取與可使用的優惠券。"
-              />
+              {faqDatas.map((faqData) => (
+                <QuizBox
+                  key={faqData.id}
+                  question={faqData.question}
+                  answer={faqData.answer}
+                />
+              ))}
             </div>
           </div>
         </div>
       </section>
+
+      {/* 吐司 */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={true}
+        closeOnClick
+      />
     </>
   );
 }

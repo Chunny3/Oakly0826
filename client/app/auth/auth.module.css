@@ -24,7 +24,7 @@
 }
 
 .title {
-    font-weight: 700;
+    font-weight: 500;
     font-size: 1.8rem;
     color: #000;
     margin-bottom: 30px;
@@ -57,9 +57,152 @@
     text-decoration: underline;
 }
 
-/* RWD：>=768px 才顯示左圖 */
+/* --------or-------- */
+
+.divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    /* 線跟文字的間距 */
+    margin: 16px 0;
+    /* 上下間距 */
+    color: #9e9e9e;
+    /* "or" 的顏色 */
+    font-size: 12px;
+    /* "or" 的大小 */
+    line-height: 1;
+    /* 避免擠壓 */
+}
+
+.divider::before,
+.divider::after {
+    content: "";
+    flex: 1;
+    /* 左右線自動撐滿 */
+    height: 1px;
+    /* 線的粗細 */
+    background: #e0e0e0;
+    /* 線的顏色 */
+    display: block;
+}
+
+
+.mobileOnly {
+    display: block;
+}
+
+/* ====== 可滑出的 Header 基礎樣式 ====== */
+
+
+/* 內容區，避免被 fixed header 擋到點擊 */
+.pageContent {
+    position: relative;
+    z-index: 0;
+}
+
+/* 頂端觸發區（桌機 hover 用） */
+.revealZone {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 8px;
+    z-index: 40;
+    pointer-events: auto;
+}
+
+/* 會滑出的 Header 容器（預設藏上面） */
+.slideHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    transform: translateY(-100%);
+    transition: transform 200ms ease;
+}
+
+/* ====== 桌機（≥768px）：左圖顯示 + Header 滑出互動 ====== */
 @media (min-width: 768px) {
     .left {
         display: block;
     }
+
+    /* 游標碰到觸發區時，滑出 */
+    .revealZone:hover+.slideHeader {
+        transform: translateY(0);
+    }
+
+    /* 滑出後把滑鼠移到 header 上也保持顯示 */
+    .slideHeader:hover {
+        transform: translateY(0);
+    }
+}
+
+/* === 手機＆小平板：<= 767px === */
+@media (max-width: 767px) {
+
+    /* 1) 關掉頂端觸發條，避免擋觸控 */
+    .revealZone {
+        display: none;
+    }
+
+    /* 2) 手機 Header 固定顯示在頂端 */
+    .slideHeader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        transform: translateY(0);
+        /* 依你的 Header 實際高度調整：56/64/72 其中一個 */
+        height: 64px;
+    }
+
+    /* 3) 內容往下騰出同等高度，避免被蓋住 */
+    .pageContent,
+    .full {
+        padding-top: 64px;
+        /* 與 .slideHeader 高度一致 */
+    }
+
+    /* 4) （可留可刪）若你想讓右側容器更貼近設計 */
+    /* .right {
+        justify-content: flex-start;
+        padding: 0;
+    } */
+}
+
+/* 手機版 (<= 430px) */
+@media (max-width: 430px) {
+    .full {
+        display: flex;
+        flex-direction: column;
+        padding: 100px 50px;
+        /* 讓內容不要貼邊 */
+    }
+
+    .right {
+        padding: 0;
+        /* 減少左右留白 */
+        justify-content: flex-start;
+    }
+
+    .form {
+        max-width: 100%;
+        /* 滿版寬度 */
+    }
+
+    .title {
+        font-size: 32px;
+        /* 標題稍微縮小 */
+        margin-bottom: 50px;
+    }
+
+    .links {
+        justify-content: left;
+        font-size: 0.85rem;
+    }
+
+
 }

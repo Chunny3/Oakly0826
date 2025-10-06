@@ -5,9 +5,10 @@ import "@/styles/globalsHui.css";
 import styles from "@/styles/index/index.module.css";
 import "@/styles/btnReset/btnReset.css";
 
-import { useState } from "react";
+import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
+import clsx from "clsx";
 
 // 靜態圖片
 import spaceImage from "@/public/img/hui/space/high-angle-desk-arrangement.jpg";
@@ -21,10 +22,75 @@ import ProductCard from "./_components/index/ProductCard";
 import ArticleCard from "./_components/index/ArticleCard";
 import CarouselHead from "./_components/index/CarouselHead";
 
-export default function IndexPage(props) {
+export default function IndexPage() {
+  const [activeTab, setActiveTab] = useState("new");
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+  //產品
+  const [loading, setLoading] = useState(false);
+  // const [productData, setProductData] = useState({
+  //   new: [],
+  //   hot: []
+  // });
+  // 產品分頁
+  const [allProducts, setAllProducts] = useState({ new: [], hot: [] });
+  const [currentPage, setCurrentPage] = useState({ new: 1, hot: 1 });
+  const itemsPerPage = 8;
+  //計算當前產品
+
+
+  // 頁面載入時自動取得新品資料
+  useEffect(() => {
+    fetchProducts("new");
+  }, []);
+
+  // 產品
+  const fetchProducts = async (category) => {
+    try {
+      setLoading(true);
+
+      let apiUrl = '';
+      if (category === 'new') {
+        apiUrl = 'http://localhost:3005/api/products/latest';
+      } else if (category === 'hot') {
+        apiUrl = 'http://localhost:3005/api/products/hot-products';
+      }
+
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+
+      console.log('產品 API 回傳的資料:', data);
+
+      // 把資料存到 state
+      setAllProducts(prev => ({
+        ...prev,
+        [category]: data
+      }));
+
+
+    } catch (error) {
+      console.error('取得產品資料失敗:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 當前頁面產品
+  const getCurrentPageProducts = (category) => {
+    if (!allProducts[category] || !Array.isArray(allProducts[category])) {
+      console.log('回傳空陣列');
+      return [];
+    }
+
+    const start = (currentPage[category] - 1) * itemsPerPage;
+    const end = start + itemsPerPage;
+    return allProducts[category].slice(start, end);
+  };
+
+
+
+  // 文章
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartX(e.pageX - e.currentTarget.offsetLeft);
@@ -42,6 +108,7 @@ export default function IndexPage(props) {
   const handleMouseUp = () => {
     setIsDragging(false);
   };
+
 
   return (
     <>
@@ -61,42 +128,42 @@ export default function IndexPage(props) {
             <div className="row justify-content-center">
               <div className={`${styles.cateIcons}`}>
                 <Link
-                  href="/products"
+                  href="/products?category=客廳"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.livingroom}`} />
                   <h6>客 廳</h6>
                 </Link>
                 <a
-                  href="/products"
+                  href="/products?category=廚房"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.kitchen}`} />
                   <h6>餐廚空間</h6>
                 </a>
                 <a
-                  href="/products"
+                  href="/products?category=臥室"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.bedroom}`} />
                   <h6>臥 室</h6>
                 </a>
                 <a
-                  href="/products"
+                  href="/products?category=兒童房"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.kidroom}`} />
                   <h6>兒童房</h6>
                 </a>
                 <a
-                  href="/products"
+                  href="products?category=辦公空間"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.office}`} />
                   <h6>辦公空間</h6>
                 </a>
                 <a
-                  href="/products"
+                  href="/products?category=收納用品"
                   className={`${styles.cate} d-flex justify-content-center align-items-center flex-column`}
                 >
                   <div className={`${styles.cateIcon} ${styles.storage}`} />
@@ -116,69 +183,70 @@ export default function IndexPage(props) {
             <div className="row w-100">
               <div className="col-12 d-flex flex-column flex-lg-row justify-content-lg-between align-items-center">
                 <div className="d-flex gap-lg align-items-center">
-                  <TabItem>為你推薦</TabItem>
-                  <TabItem>新品專區</TabItem>
-                  <TabItem>熱銷商品</TabItem>
+                  <TabItem
+                    className={clsx({ active: activeTab === "new" })}
+                    onClick={() => {
+                      setActiveTab("new");
+                      fetchProducts("new")
+                    }}>新品專區</TabItem>
+                  <TabItem
+                    className={clsx({ active: activeTab === "hot" })}
+                    onClick={() => {
+                      setActiveTab("hot");
+                      fetchProducts("hot")
+                    }}
+                  >熱銷商品</TabItem>
                 </div>
                 <div
                   className={`d-flex gap-md ${styles.arrow} d-none d-lg-flex`}
                 >
-                  <button className={`btn d-flex ${styles.arrowLeft}`} />
-                  <button className={`btn d-flex ${styles.arrowRight}`} />
+                  <button className={`btn d-flex ${styles.arrowLeft}`}
+                    onClick={() => {
+                      console.log('左箭頭被點擊');
+                      const newPage = currentPage[activeTab] - 1
+                      if (newPage >= 1) {
+                        setCurrentPage(prev => ({
+                          ...prev,
+                          [activeTab]: newPage
+                        }))
+                      }
+                    }}
+                  />
+                  <button className={`btn d-flex ${styles.arrowRight}`}
+                    onClick={() => {
+                      console.log('右箭頭被點擊');
+                      const maxPage = Math.ceil(allProducts[activeTab].length / itemsPerPage)
+                      const newPage = currentPage[activeTab] + 1
+                      if (newPage <= maxPage) {
+                        setCurrentPage(prev => ({
+                          ...prev,
+                          [activeTab]: newPage
+                        }))
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>
 
             <div className="row">
               <div className="col-12">
-                <div
-                  className={`d-flex flex-wrap justify-content-center ${styles.productGap}`}
-                >
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <ProductCard
-                    img="/img/hui/product/0583377_PE671187_S5.jpg"
-                    name="電視櫃"
-                    price="8,999"
-                  />
-                  <div className="d-none d-lg-block">
-                    <ProductCard
-                      img="/img/hui/product/0583377_PE671187_S5.jpg"
-                      name="電視櫃"
-                      price="8,999"
-                    />
-                  </div>
-                  <div className="d-none d-lg-block">
-                    <ProductCard
-                      img="/img/hui/product/0583377_PE671187_S5.jpg"
-                      name="電視櫃"
-                      price="8,999"
-                    />
-                  </div>
-                </div>
+                {loading ? (
+                  <div className="loaderLine"></div>) :
+                  (
+                    <div className={`d-flex flex-wrap  ${styles.productGap}`}>
+                      {getCurrentPageProducts(activeTab).map((item) => (
+                        <ProductCard
+                          key={item.id}
+                          href={`/products/${item.id}`}
+                          img={`http://localhost:3005${item.images?.[0]}`}
+                          name={item.name}
+                          price={item.price}
+                        />
+                      ))
+                      }
+                    </div>)
+                }
               </div>
             </div>
 
@@ -187,8 +255,31 @@ export default function IndexPage(props) {
                 <div
                   className={`d-flex gap-xl justify-content-center ${styles.arrow}`}
                 >
-                  <button className={`btn d-flex ${styles.arrowLeft}`} />
-                  <button className={`btn d-flex ${styles.arrowRight}`} />
+                  <button className={`btn d-flex ${styles.arrowLeft}`}
+                    onClick={() => {
+                      console.log('左箭頭被點擊');
+                      const newPage = currentPage[activeTab] - 1
+                      if (newPage >= 1) {
+                        setCurrentPage(prev => ({
+                          ...prev,
+                          [activeTab]: newPage
+                        }))
+                      }
+                    }}
+                  />
+                  <button className={`btn d-flex ${styles.arrowRight}`}
+                    onClick={() => {
+                      console.log('右箭頭被點擊');
+                      const maxPage = Math.ceil(allProducts[activeTab].length / itemsPerPage)
+                      const newPage = currentPage[activeTab] + 1
+                      if (newPage <= maxPage) {
+                        setCurrentPage(prev => ({
+                          ...prev,
+                          [activeTab]: newPage
+                        }))
+                      }
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -225,7 +316,7 @@ export default function IndexPage(props) {
                     不論是追劇還是遠端會議，一張順眼又順手的桌椅能讓空間更好用。
                   </h5>
                   <p className="t-primary03">
-                    7/8–7/14 期間
+                    9/18–9/30 期間
                     <br />
                     領券可享指定商品 88 折或滿 $3000 折 $400
                   </p>
@@ -304,75 +395,75 @@ export default function IndexPage(props) {
       </section>
       {/* section-05: 編輯推薦文章 */}
       {false &&
-      <section>
-        <div className="section-fluid d-flex flex-column gap-xxxl align-items-center">
-          <div className="gap-md text-center d-flex flex-column">
-            <h2 className="t-primary01">編輯推薦文章</h2>
-            <h5 className="t-gray600">想了解更多整理技巧？這些文章值得一讀</h5>
+        <section>
+          <div className="section-fluid d-flex flex-column gap-xxxl align-items-center">
+            <div className="gap-md text-center d-flex flex-column">
+              <h2 className="t-primary01">編輯推薦文章</h2>
+              <h5 className="t-gray600">想了解更多整理技巧？這些文章值得一讀</h5>
+            </div>
+            {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */}
+            <div
+              className={`${styles.articleArea} d-flex`}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+            >
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />{" "}
+              <ArticleCard
+                tag="#餐廳空間 #生活節奏"
+                img="/img/hui/space/pexels-pixabay-358572.jpg"
+                title="餐桌就是生活緩衝區"
+                content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
+                date="2025 / 7 / 2"
+              />
+            </div>
+            <Link href="/article">
+              <GreenBorderButton>想看更多文章</GreenBorderButton>
+            </Link>
           </div>
-          {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions, jsx-a11y/no-static-element-interactions */}
-          <div
-            className={`${styles.articleArea} d-flex`}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-          >
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />{" "}
-            <ArticleCard
-              tag="#餐廳空間 #生活節奏"
-              img="/img/hui/space/pexels-pixabay-358572.jpg"
-              title="餐桌就是生活緩衝區"
-              content="每天吃飯的地方，最容易被堆滿雜物。這篇文章分享怎麼讓餐桌回到「生活中心」的角色，不只是清空，更是整理節奏的開始。"
-              date="2025 / 7 / 2"
-            />
-          </div>
-          <Link href="/article">
-            <GreenBorderButton>想看更多文章</GreenBorderButton>
-          </Link>
-        </div>
-      </section>
+        </section>
       }
     </>
   );

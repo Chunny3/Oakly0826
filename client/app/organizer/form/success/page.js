@@ -60,7 +60,7 @@ export default function SuccessPage() {
 
   return (
     <>
-      <section className="d-flex flex-column gap-xl section align-items-center mt-xxxl">
+      <section className="d-flex flex-column gap-xl section align-items-center">
         <h2 className="t-primary01 text-center">我們收到您的諮詢囉！</h2>
         <div className="d-flex flex-column gap-lg">
           <h6 className="t-primary03 text-center">親愛的 {userName} 您好：</h6>

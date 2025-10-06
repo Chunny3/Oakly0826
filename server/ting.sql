@@ -8,9 +8,32 @@ SELECT * FROM users;
 DELETE FROM users 
 WHERE DATE(created_at) = '2025-09-07';
 
+SELECT DATABASE();
+
+DESCRIBE products;
+
 SELECT * FROM users WHERE email = 'li.meihao@example.com';
 
+DESCRIBE favorites;
 
+ALTER TABLE favorites
+  ADD COLUMN color_id INT NULL,
+  ADD COLUMN size_id INT NULL,
+  ADD COLUMN color_name VARCHAR(100) NULL,
+  ADD COLUMN quantity INT NOT NULL DEFAULT 1;
+
+-- 建議加一個「同一會員、同商品、同規格」的唯一鍵，避免重複收藏
+ALTER TABLE favorites
+  ADD UNIQUE KEY uniq_user_product_variant (user_id, product_id, color_id, size_id);
+
+DESCRIBE products;
+
+ALTER TABLE products ADD COLUMN product_img VARCHAR(500) NULL;
+
+DESCRIBE colors;
+DESCRIBE sizes;
+
+DESCRIBE product_images;
 
 -- 1) 基礎/父表
 

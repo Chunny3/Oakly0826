@@ -5,7 +5,7 @@
 
 .btn,
 button {
-  &:not(.btn-green , .brownBtn) {
+  &:not(.btn-green , .brownBtn,tab-items ) {
     &:focus,
     &:focus-visible,
     &:active,

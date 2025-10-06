@@ -27,8 +27,7 @@
       opacity: 1;
 
       &.livingroom {
-        background: url('/img/hui/icon/armchair.gif') lightgray 50% / cover
-          no-repeat;
+        background: url('/img/hui/icon/armchair.gif') lightgray 50% / cover no-repeat;
       }
 
       &.kitchen {
@@ -44,8 +43,7 @@
       }
 
       &.office {
-        background: url('/img/hui/icon/teacher-desk.gif') lightgray 50% / cover
-          no-repeat;
+        background: url('/img/hui/icon/teacher-desk.gif') lightgray 50% / cover no-repeat;
       }
 
       &.storage {
@@ -79,8 +77,7 @@
   }
 
   &.office {
-    background: url('/img/hui/icon/teacher-desk.jpg') lightgray 50% / cover
-      no-repeat;
+    background: url('/img/hui/icon/teacher-desk.jpg') lightgray 50% / cover no-repeat;
   }
 
   &.storage {
@@ -91,10 +88,18 @@
 .card1 {
   /* min-width: 160px; */
   /* max-width: 200px; */
+  max-width: 160px;
   text-decoration: none;
 
   h5 {
     color: var(--color-gray-700, #8b8b8b);
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 最多顯示2行 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 2.8em; /* 2行的高度，確保統一 */
+    word-break: break-word;
   }
 
   .price {
@@ -115,6 +120,9 @@
       line-height: normal;
     }
   }
+    @media (min-width: 1200px) {
+        max-width: 260px;
+    }
 }
 
 .productImgWrapper {
@@ -180,6 +188,7 @@
     &:hover {
       background: url(/img/hui/icon/arrow-left-fill.svg) center / cover no-repeat;
     }
+
     &:focus,
     &:focus-visible,
     &:active,
@@ -195,9 +204,11 @@
     height: 28px;
     background: url(/img/hui/icon/arrow-right.svg) center / cover no-repeat;
     transition: all 0.3s ease;
+
     &:hover {
       background: url(/img/hui/icon/arrow-right-fill.svg) center / cover no-repeat;
     }
+
     &:focus,
     &:focus-visible,
     &:active,
@@ -214,6 +225,7 @@
   width: 100%;
   object-fit: cover;
   margin-bottom: 28px;
+
   @media (min-width: 1200px) {
     margin-bottom: 0;
   }
@@ -221,6 +233,7 @@
 
 .section03Gap {
   gap: 0;
+
   @media (min-width: 1200px) {
     gap: var(--gap-xxxl);
   }
@@ -345,6 +358,7 @@
   &::-webkit-scrollbar {
     display: none;
   }
+
   .articleArea:active {
     cursor: grabbing;
   }
@@ -426,8 +440,8 @@
 .carouselWrapper {
   position: relative;
   height: 100vh;
-  @media (min-width: 1200px) {
-  }
+
+  @media (min-width: 1200px) {}
 }
 
 .headBg {
@@ -446,22 +460,25 @@
   h1 {
     padding: 0 0 36px 0;
     border-bottom: 2px solid #fff;
+
     @media (min-width: 1200px) {
       padding: 48px 0;
     }
   }
 
-  h1 + p {
+  h1+p {
     padding-top: 28px;
     font-size: 16px;
     font-weight: 500;
-    line-height: 28px; /* 175% */
+    line-height: 28px;
+    /* 175% */
     letter-spacing: 1px;
 
     @media (min-width: 1200px) {
       padding-top: 48px;
       font-size: 26px;
-      line-height: 44px; /* 169.231% */
+      line-height: 44px;
+      /* 169.231% */
       letter-spacing: var(--font-tw-letter-spacing-2, 2px);
     }
   }
@@ -495,7 +512,7 @@
 
 .rightView {
   overflow: hidden;
-  
+
   @media (min-width: 1200px) {
     max-width: 1020px;
     height: 600px;
@@ -540,7 +557,8 @@
   height: 194px;
   object-fit: cover;
   cursor: pointer;
-  transition: all 0.3s ease; /* 加上縮放動畫 */
+  transition: all 0.3s ease;
+  /* 加上縮放動畫 */
 
   @media (min-width: 1200px) {
     width: 400px;

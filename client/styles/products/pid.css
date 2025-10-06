@@ -1309,7 +1309,6 @@ body.modal-open {
     display: flex;
     transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     gap: 24px;
-    
 }
 
 
@@ -1411,7 +1410,12 @@ body.modal-open {
     transform: scale(1.1);
 
 }
-
+.swal2-success-ring,
+.swal2-success-line-tip,
+.swal2-success-line-long {
+  color: #ba5252 !important;
+  border: 3px solid #ba5252 !important;
+}
 /* 確保 hover 商品時，active 狀態的愛心也正確顯示 */
 .product-card:hover .wishlist-heart-btn.active {
     opacity: 1;
@@ -2412,12 +2416,7 @@ body.modal-open {
     z-index: 1;
     background: white;
   }
-  .swal2-success-ring,
-  .swal2-success-line-tip,
-.swal2-success-line-long {
-    color: #ba5252 !important;
-    border: 3px solid #ba5252 !important;
-  }
+
   .swal2-cancel.swal2-styled{
     background-color: #6A6A6A;
   }
@@ -2733,12 +2732,6 @@ body.modal-open {
         width: 400px !important;
     }
     
-    .products-track {
-        display: flex;
-        transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        gap: 24px;
-        
-    }
 
     .custom-scrollbar-container{
         width: 300px;
@@ -2982,7 +2975,7 @@ body.modal-open {
 }
 
 
-}
+}/* 強制modal顯示在最頂層 - 終極解決方案 */
 .modal {
     z-index: 2147483647 !important;
     position: fixed !important;
@@ -3521,3 +3514,5 @@ body.modal-open .detail-product-page > *:not(.modal):not(.modal-backdrop) {
   .cart-success-actions .view-cart:hover {
     background-color: #5d8570;
   }
+
+ 

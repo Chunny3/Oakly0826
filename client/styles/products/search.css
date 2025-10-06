@@ -330,12 +330,7 @@ body {
   z-index: 1000;
 }
 
-.swal2-success-ring,
-.swal2-success-line-tip,
-.swal2-success-line-long {
-  color: #ba5252 !important;
-  border: 3px solid #ba5252 !important;
-}
+
 /* 每一欄 */
 .megamenu-column {
   display: flex;
@@ -914,7 +909,12 @@ span {
 .wishlist-heart-btn.active {
   color: white;
 }
-
+.swal2-success-ring,
+.swal2-success-line-tip,
+.swal2-success-line-long {
+  color: #ba5252 !important;
+  border: 3px solid #ba5252 !important;
+}
 .wishlist-heart-btn.active:hover {
   transform: scale(1.1);
 }
@@ -1775,6 +1775,7 @@ span {
   .productcard {
     height: auto;
     overflow: visible;
+
   }
 
   .image {
@@ -1786,8 +1787,7 @@ span {
   .image img {
     object-fit: cover;
     overflow: visible;
-    overflow: visible;
-
+    
 
   }
 

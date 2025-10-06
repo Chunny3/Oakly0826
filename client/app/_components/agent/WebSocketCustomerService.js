@@ -9,7 +9,9 @@ const CustomerChat = () => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [chatStatus, setChatStatus] = useState('offline'); // offline, waiting, active
+  const [chatStatus, setChatStatus] = useState('offline'); // 改為：offline, bot, waiting, active
+  const [isBotMode, setIsBotMode] = useState(true);
+  const [showTransferButton, setShowTransferButton] = useState(false);
   const [messages, setMessages] = useState([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [roomId, setRoomId] = useState(null);
@@ -18,6 +20,12 @@ const CustomerChat = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef(null);
+  const [botTyping, setBotTyping] = useState(false);
+  const [isTransferring, setIsTransferring] = useState(false); 
+  const transferRequestSent = useRef(false); // 🔥 添加這行
+
+
+
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
@@ -55,17 +63,21 @@ const CustomerChat = () => {
       return;
     }
 
-    if (socket && socket.connected) {
-      console.log('Socket 已連接，跳過重複連接');
+    if (socket?.connected && socket?.userId === (user?.id || null)) {
+      console.log('相同用戶的 Socket 已連接，跳過重複連接');
       return;
     }
 
-    // 等待更長時間確保所有狀態穩定
     const timer = setTimeout(() => {
       if (isLoading) {
         console.log('延遲檢查時仍在載入，取消連接');
         return;
       }
+      if (socket) {
+      socket.removeAllListeners();
+      socket.disconnect();
+      setSocket(null);
+    }
 
 
 
@@ -130,6 +142,12 @@ const CustomerChat = () => {
         console.error('Socket 連接錯誤:', error);
         setIsConnected(false);
       });
+      newSocket.on('force_disconnect', (data) => {
+        console.log('收到強制斷線:', data.reason);
+        newSocket.disconnect();
+        setSocket(null);
+        setIsConnected(false);
+      });
 
       // 斷線
       newSocket.on('disconnect', (reason) => {
@@ -166,6 +184,7 @@ const CustomerChat = () => {
         setAgentName(data.agentName || '客服專員');
       });
 
+
       // 房間建立
       newSocket.on('room_created', (data) => {
         // console.log('聊天房間已建立:', data);
@@ -175,13 +194,95 @@ const CustomerChat = () => {
 
       // 聊天被接受
       newSocket.on('chat_accepted', (data) => {
-        // console.log('聊天被客服接受:', data);
         setChatStatus('active');
-        setMessages(data.messages || []);
         setAgentName(data.agentName || '客服專員');
         setUnreadCount(0);
+        setIsTransferring(false);
+        transferRequestSent.current = false;
+      
+        // 🔥 修正並過濾訊息
+        const processedMessages = (data.messages || []).map(msg => {
+          // 如果訊息內容包含機器人特徵，強制設定為 bot 類型
+          if (msg.message && msg.message.includes('Oakly 智能助手')) {
+            return {
+              ...msg,
+              sender_type: 'bot'
+            };
+          }
+          return msg;
+        }).filter(msg => 
+          // 只保留客戶和真人客服的訊息，排除機器人訊息
+          msg.sender_type === 'customer' || msg.sender_type === 'agent'
+        );
+      
+        setMessages(processedMessages);
+      
 
       });
+      // 機器人回覆
+      newSocket.on('bot_response', (response) => {
+        setBotTyping(false);
+        setMessages(prev => [...prev, {
+          id: Date.now(),
+          message: response.message,
+          sender_type: 'bot',
+          message_type: 'text',
+          created_at: new Date().toISOString()
+        }]);
+        setShowTransferButton(true);
+        setTimeout(scrollToBottom, 100);
+      });
+
+      // 機器人正在輸入
+      newSocket.on('bot_typing', () => {
+        setBotTyping(true);
+        setTimeout(() => setBotTyping(false), 2000);
+      });
+
+      // 轉接成功
+      newSocket.on('transfer_success', (data) => {
+        setIsBotMode(false);
+        setChatStatus('waiting');
+        setShowTransferButton(false);
+        const transferMessage = {
+          id: Date.now(),
+          message: "已為您轉接人工客服，請稍候...",
+          sender_type: 'system',
+          message_type: 'text',
+          created_at: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, transferMessage]);
+      });
+
+      // 轉接失敗
+      newSocket.on('transfer_failed', (error) => {
+        alert('轉接失敗：' + error.message);
+      });
+
+
+      newSocket.on('transfer_initiated', (data) => {
+        console.log('收到轉接啟動:', data);
+        
+        // 🔥 修正：提取正確的數字 roomId
+        const newRoomId = data.newRoomId.replace('human_', '');
+        
+        setRoomId(newRoomId);  // 使用數字 ID
+        setChatStatus('waiting');
+        setIsBotMode(false);
+        setShowTransferButton(false);
+        setIsTransferring(false);
+        transferRequestSent.current = false;
+        
+        const waitingMessage = {
+          id: Date.now(),
+          message: data.message,
+          sender_type: 'system',
+          message_type: 'text',
+          created_at: new Date().toISOString()
+        };
+        setMessages(prev => [...prev, waitingMessage]);
+      });
+
 
       // 新訊息
       newSocket.on('new_message', (message) => {
@@ -193,15 +294,44 @@ const CustomerChat = () => {
         setTimeout(scrollToBottom, 100);
       });
 
+newSocket.on('transfer_completed', (data) => {
+
+  console.log('🔥 客戶端收到轉接完成:', data);
+  console.log('🔥 客戶端當前 roomId:', roomId);
+  console.log('🔥 客戶端新 roomId:', data.newRoomId);  
+  // 客戶加入新房間
+  socket.join(`room_${data.newRoomId}`);
+  
+  // 更新客戶端狀態
+  setRoomId(data.newRoomId);
+  setChatStatus('active');
+  setAgentName(data.agentName);
+  setIsBotMode(false);
+  setShowTransferButton(false);
+  
+  // 添加轉接成功訊息
+  const successMessage = {
+    id: Date.now(),
+    message: `已成功轉接給 ${data.agentName}，請問有什麼可以幫助您的？`,
+    sender_type: 'system',
+    message_type: 'text',
+    created_at: new Date().toISOString()
+  };
+  setMessages(prev => [...prev, successMessage]);
+});
+
       // 聊天結束
       newSocket.on('chat_ended', () => {
-        // console.log('聊天已結束');
+        console.log('聊天已結束');
         setChatStatus('offline');
         setAgentName('');
         setMessages([]);
         setRoomId(null);
+        setIsBotMode(true);
+        setShowTransferButton(false);
+        setIsTransferring(false);
+        transferRequestSent.current = false;
       });
-
       // 錯誤處理
       newSocket.on('error', (error) => {
         // console.error('聊天系統錯誤:', error);
@@ -224,8 +354,12 @@ const CustomerChat = () => {
 
     return () => {
       clearTimeout(timer);
+      transferRequestSent.current = false; 
+
       if (socket?.connected) {
         console.log('清理並關閉 Socket 連接');
+        socket.removeAllListeners(); 
+
         socket.disconnect();
         setSocket(null);
       }
@@ -295,23 +429,41 @@ const CustomerChat = () => {
   };
 
   const startChat = () => {
-    console.log(' Starting chat...');
+    console.log('Starting chat...');
     if (!socket || !isConnected) {
       console.error('Socket not ready:', { socket: !!socket, isConnected });
       alert('聊天系統未準備就緒，請稍後再試');
       return;
     }
 
+    console.log('📤 Starting bot chat...');
 
-    console.log('📤 Requesting customer service...');
-    socket.emit('request_customer_service', {
+    // 🔥 修改這裡 - 設置機器人模式 🔥
+    setIsBotMode(true);
+    setChatStatus('bot');
+    setAgentName('Oakly 智能助手');
+    setIsChatOpen(true);
+    setShowTransferButton(false);
+
+    // 發送機器人聊天請求而不是客服請求
+    socket.emit('start_bot_chat', {
       ...userData,
     });
 
-    setIsChatOpen(true);
-    setChatStatus('waiting');
-    setMessages([]);
+    const welcomeMessage = {
+      id: Date.now(),
+      message: "您好！我是 Oakly 智能助手，很高興為您服務！我可以幫您了解產品資訊、訂單狀態等。請問有什麼可以幫助您的嗎？",
+      sender_type: 'bot',
+      message_type: 'text',
+      created_at: new Date().toISOString()
+    };
 
+    setMessages([welcomeMessage]);
+
+    // 延遲顯示轉接按鈕
+    setTimeout(() => {
+      setShowTransferButton(true);
+    }, 2000);
   };
 
   const sendMessage = () => {
@@ -319,35 +471,110 @@ const CustomerChat = () => {
       currentMessage,
       socket: !!socket,
       roomId,
-      chatStatus
+      chatStatus,
+      isBotMode
     });
-
+  
     if (!currentMessage.trim()) {
       console.log('❌ Empty message');
       return;
     }
-
+  
     if (!socket) {
       console.error('❌ No socket connection');
       alert('聊天連接已斷開');
       return;
     }
-
-    if (!roomId) {
-      console.error('❌ No room ID');
-      alert('請先開始對話');
+  
+    if (isBotMode && chatStatus === 'bot') {
+      // 機器人模式
+      console.log('📤 Sending message to bot...');
+  
+      const userMessage = {
+        id: Date.now(),
+        message: currentMessage,
+        sender_type: 'customer',
+        message_type: 'text',
+        created_at: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setBotTyping(true);
+  
+      socket.emit('send_message_to_bot', {
+        roomId: roomId || 'bot_' + Date.now(),
+        message: currentMessage,
+        messageType: 'text',
+        userData
+      });
+  
+    } else if (!isBotMode && roomId) {
+      // 🔥 真人客服模式 - 確保 roomId 是數字格式
+      const finalRoomId = typeof roomId === 'string' ? roomId.replace('human_', '') : roomId;
+      console.log('📤 Sending message to human agent...', { finalRoomId });
+      
+      socket.emit('send_message', {
+        roomId: finalRoomId,  // 使用處理過的 roomId
+        message: currentMessage,
+        messageType: 'text'
+      });
+      
+    } else {
+      console.error('❌ Invalid state for sending message:', { isBotMode, roomId, chatStatus });
       return;
     }
-
-    console.log('📤 Sending message...');
-    socket.emit('send_message', {
-      roomId,
-      message: currentMessage,
-      messageType: 'text'
-    });
-
+  
     setCurrentMessage('');
   };
+
+
+  const transferToHuman = () => {
+    if (!socket || isTransferring || transferRequestSent.current) {
+      console.log('轉接被阻止:', { 
+        hasSocket: !!socket, 
+        isTransferring, 
+        transferRequestSent: transferRequestSent.current 
+      });
+      return;
+    }
+  
+    console.log('🔄 開始轉接到真人客服...');
+    setIsTransferring(true);
+    transferRequestSent.current = true; 
+  
+    // 🔥 使用更簡單的 roomId 生成邏輯
+    const transferRoomId = `transfer_${userData.userId || socket.id}_${Date.now()}`;
+  
+    setIsBotMode(false);
+    setChatStatus('waiting');
+    setAgentName('');
+    setShowTransferButton(false);
+    setRoomId(transferRoomId); // 設定新的轉接 roomId
+  
+    socket.emit('request_human_transfer', { 
+      roomId: transferRoomId, // 使用新生成的 roomId
+      userData,
+      previousMessages: messages,
+      transferReason: '客戶主動要求轉接真人客服'
+    });
+  
+    const transferMessage = {
+      id: Date.now(),
+      message: "正在為您轉接真人客服，請稍候...",
+      sender_type: 'system',
+      message_type: 'text',
+      created_at: new Date().toISOString()
+    };
+    setMessages(prev => [...prev, transferMessage]);
+  };
+
+
+
+
+
+
+
+
+
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -356,18 +583,64 @@ const CustomerChat = () => {
     }
   };
 
+  const quickReplies = [
+    "產品諮詢",
+    "訂單查詢",
+    "退換貨服務",
+    "配送問題",
+    "售後服務",
+    "其他問題"
+  ];
+
+  const handleQuickReply = (reply) => {
+    if (!socket) return;
+
+    if (isBotMode && chatStatus === 'bot') {
+      // 直接發送快速回覆訊息
+      const userMessage = {
+        id: Date.now(),
+        message: reply,
+        sender_type: 'customer',
+        message_type: 'text',
+        created_at: new Date().toISOString()
+      };
+      setMessages(prev => [...prev, userMessage]);
+      setBotTyping(true);
+
+      socket.emit('send_message_to_bot', {
+        roomId: roomId || 'bot_' + Date.now(),
+        message: reply,
+        messageType: 'text',
+        userData
+      });
+    } else if (!isBotMode && roomId) {
+      // 真人客服模式
+      socket.emit('send_message', {
+        roomId,
+        message: reply,
+        messageType: 'text'
+      });
+    }
+  };
+
   const endChat = () => {
     if (!socket || !roomId) return;
-
+  
+    // 發送結束聊天事件到後端
     socket.emit('end_chat', { roomId });
+    
+    // 立即更新本地狀態
     setIsChatOpen(false);
     setChatStatus('offline');
     setMessages([]);
     setRoomId(null);
     setAgentName('');
     setUnreadCount(0);
+    setIsBotMode(true);
+    setShowTransferButton(false);
+    setIsTransferring(false);
+    transferRequestSent.current = false;
   };
-
   const toggleChat = () => {
     if (isChatOpen) {
       setIsChatOpen(false);
@@ -387,6 +660,8 @@ const CustomerChat = () => {
 
   const getStatusText = () => {
     switch (chatStatus) {
+      case 'bot':
+        return `與 ${agentName} 對話中`;
       case 'waiting':
         return '等待客服中...';
       case 'active':
@@ -475,33 +750,113 @@ const CustomerChat = () => {
                 </div>
               )}
 
-              {messages.map((message, index) => (
-                <div
-                  key={message.id || index}
-                  className={`message ${message.sender_type === 'customer' ? 'sent' : 'received'}`}
-                >
+{messages.map((message, index) => {
+  let messageClass = 'received';
+  if (message.sender_type === 'customer') {
+    messageClass = 'sent';
+  } else if (message.sender_type === 'system') {
+    messageClass = 'system';
+  }
+
+  return (
+    <div
+      key={`${message.id || 'msg'}_${index}_${message.created_at}`}
+      className={`message ${messageClass} ${
+        message.sender_type === 'bot' ? 'bot-message' : ''
+      }`}
+    >
+      {(message.sender_type === 'bot' || message.sender_type === 'agent') && (
+        <div className="bot-avatar">
+          <span className="bot-icon">
+            {message.sender_type === 'bot' ? '🤖' : '👤'}
+          </span>
+        </div>
+      )}
+
+      {message.sender_type === 'system' && (
+        <div className="system-avatar">
+          <span className="system-icon">ℹ️</span>
+        </div>
+      )}
+
+      <div className="message-content">
+        <div className="message-bubble">
+          {/* 🔥 添加圖片顯示邏輯 */}
+          {message.message_type === 'image' ? (
+            <img
+              src={message.message}
+              alt="上傳的圖片"
+              style={{
+                maxWidth: '200px',
+                height: 'auto',
+                borderRadius: '8px',
+                display: 'block'
+              }}
+              onError={(e) => {
+                console.error('圖片載入失敗:', message.message);
+                e.target.style.display = 'none';
+              }}
+            />
+          ) : (
+            message.message
+          )}
+        </div>
+        <div className="message-time">
+          {formatTime(message.created_at)}
+        </div>
+      </div>
+    </div>
+  );
+})}
+
+              {botTyping && (
+                <div className="message received bot-message">
+                  <div className="bot-avatar">
+                    <span className="bot-icon">🤖</span>
+                  </div>
                   <div className="message-content">
-                    <div className="message-bubble">
-                    {message.message_type === 'image' ? (  
-                        <img
-                          src={message.message}
-                          alt="上传的图片"
-                          className="chat-image"
-                          style={{ maxWidth: '200px', borderRadius: '8px' }}
-                        />
-                      ) : (
-                        message.message
-                      )}                    </div>
-                    <div className="message-time">
-                      {formatTime(message.created_at)}
+                    <div className="message-bubble typing-bubble">
+                      <div className="typing-indicator">
+                        <div className="dot"></div>
+                        <div className="dot"></div>
+                        <div className="dot"></div>
+                      </div>
+                      <span className="typing-text">智能助手正在輸入...</span>
                     </div>
                   </div>
                 </div>
-              ))}
+              )}
+
+              {showTransferButton && isBotMode && chatStatus === 'bot' && (
+                <div className="transfer-section">
+                  <div className="transfer-prompt">
+                    <p>需要更詳細的協助嗎？</p>
+                    <button className="transfer-to-human-btn" onClick={transferToHuman}>
+                      <span className="transfer-icon">👤</span>
+                      轉接真人客服
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <div ref={messagesEndRef} />
             </div>
-
+            {/* 快速回覆按鈕 */}
+            {isBotMode && chatStatus === 'bot' && (
+              <div className="quick-replies">
+                <div className="quick-reply-buttons">
+                  {quickReplies.map((reply, index) => (
+                    <button
+                      key={index}
+                      className="quick-reply-btn"
+                      onClick={() => handleQuickReply(reply)}
+                    >
+                      {reply}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
             <div className="chat-input">
               <div className="input-container">
                 <input
@@ -516,8 +871,12 @@ const CustomerChat = () => {
                         // chatStatus === 'waiting' ? '請等待客服回應...' : 
                         '輸入訊息...'
                   }
-                  disabled={!isConnected || !roomId}
-                  className="message-input"
+                  disabled={
+                    !isConnected || 
+                    chatStatus === 'offline' || 
+                    (isBotMode && chatStatus !== 'bot') ||
+                    (!isBotMode && !roomId)
+                  }                   className="message-input"
                 />
                 <input
                   ref={fileInputRef}
@@ -531,15 +890,20 @@ const CustomerChat = () => {
                   onClick={() => fileInputRef.current?.click()}
                   disabled={!isConnected || !roomId || isUploading}
                   className="image-upload-btn"
-                  style={{background: 'transparent', border: 'none'}}
+                  style={{ background: 'transparent', border: 'none' }}
 
                 >
-  <i className="fa-solid fa-images fa-2x" style={{color: '#cccccc'}}></i>
-  </button>
+                  <i className="fa-solid fa-images fa-2x" style={{ color: '#cccccc' }}></i>
+                </button>
                 <button
                   onClick={sendMessage}
-                  disabled={!currentMessage.trim() || !isConnected || !roomId}
-                  className="send-button"
+                  disabled={
+                    !currentMessage.trim() || 
+                    !isConnected || 
+                    chatStatus === 'offline' ||
+                    (isBotMode && chatStatus !== 'bot') ||
+                    (!isBotMode && !roomId)
+                  }                   className="send-button"
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M22 2L11 13M22 2L15 22L11 13M22 2L2 11L11 13"

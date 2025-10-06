@@ -404,6 +404,7 @@ body {
     letter-spacing: 1px;
     word-wrap: break-word;
     gap:8px
+
 }
 
 .user-info {
@@ -426,9 +427,9 @@ body {
 .user-name {
     font-weight: 600;
     display: flex
-;
-    justify-content: space-between;
-    align-items: center;
+    ;
+        justify-content: space-between;
+        align-items: center;
 }
 
 .review-time {
@@ -442,6 +443,25 @@ body {
     margin-right: 4px;
 }
 
+.review-actions {
+    display: flex;
+    gap: 10px;
+    justify-content:flex-end;
+  }
+  
+  .edit-btn {
+    background: #ededed;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    color: #6a6a6a;
+    font-size: 12px;
+  }
+  
+  .edit-btn:hover {
+    background: #d8d8d8;
+  }
 
 .review-rating .fas.fa-star.filled {
     color: #6A6A6A;
@@ -567,28 +587,7 @@ body {
     border-color: #719A8B;
 
 }
-.review-actions {
-    display: flex;
-    gap: 10px;
-    justify-content:flex-end;
-  }
-  
-  .edit-btn {
-    background: #ededed;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 2px;
-    cursor: pointer;
-    color: #6a6a6a;
-    font-size: 12px;
-  }
-  
-  .edit-btn:hover {
-    background: #d8d8d8;
-  }
 
-
-  
 textarea {
     border-radius: 2px;
     margin-bottom: 14px;

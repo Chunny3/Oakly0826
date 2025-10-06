@@ -62,20 +62,7 @@ export default function Payment() {
               <h6>信用卡</h6>
             </label>
           </div>
-          <div className="form-check pc">
-            <input
-              className="form-check-input pc"
-              type="radio"
-              name="payment"
-              value="linepay"
-              id="radioDefault2"
-              checked={selectP === "linePay"}
-              onChange={() => setSelectP("linePay")}
-            />
-            <label className="form-check-label pc" htmlFor="radioDefault2">
-              <h6>Line Pay</h6>
-            </label>
-          </div>
+          
           <div className="form-check pc">
             <input
               className="form-check-input pc"

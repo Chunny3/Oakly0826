@@ -298,19 +298,31 @@ p {
 
 .btn.tab-items {
   display: flex;
-  padding: 5px 0;
+  padding: 12px 6px;
   justify-content: center;
   font-family: var(--font-noto-sans) !important;
   font-weight: 700 !important;
   color: var(--primary-02, #9fa79a) !important;
-
+  transition: all 0.3s ease-in;
+  
+  /* 一次性移除所有不要的效果 */
+  &,
+  &:focus,
+  &:focus-visible,
+  &:active,
+  &:active:focus {
+    outline: none !important;
+    border: none !important;
+    background-color: transparent !important;
+  }
+  
   &:hover {
     color: var(--primary-03, #919191) !important;
   }
-
-  &:active,
-  &.active {
-    border-bottom: 2px solid var(--primary-03, #919191) !important;
+  
+   &.active  {
+    color: var(--primary-03, #919191) !important;
+    box-shadow: 0 2px 0 0 #919191; /* 用 box-shadow 做底線 */
   }
 }
 
@@ -341,6 +353,32 @@ p {
   }
 }
 
+.btn-green1 {
+  display: inline-flex;
+  padding: 16px 48px;
+  justify-content: center;
+  align-items: center;
+  background-color:  var(--primary-01, #6f9b8c);
+  border: 1px solid var(--primary-01, #6f9b8c);
+  color: white;
+  font-family: var(--font-noto-sans);
+  font-weight: 700;
+  border-radius: 0;
+
+  @media (min-width: 1200px) {
+    padding: 16px 62px;
+  }
+
+  &:hover {
+    color: white;
+    background-color: var(--primary-05);
+  }
+  &:active {
+    background-color: var(--primary-05) !important;
+    border: 1px solid var(--primary-05) !important;
+    color: white !important;
+  }
+}
 
 .container-xl{
     @media (max-width: 1200px) {
@@ -573,4 +611,60 @@ textarea.form-control:focus {
   .cart-success-actions {
     flex-direction: column;
   }
+}
+
+/* Loading */
+/* HTML: <div class="loader"></div> */
+.loaderLine {
+  width: 40px;
+  height: 20px;
+  --c:no-repeat radial-gradient(farthest-side,#6f9b8c 93%,#6f9b8c);
+  background:
+    var(--c) 0    0,
+    var(--c) 50%  0;
+  background-size: 8px 8px;
+  position: relative;
+  clip-path: inset(-200% -100% 0 0);
+  animation: l6-0 1.5s linear infinite;
+}
+.loaderLine:before {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 12px;
+  background: var(--primary-01, #6f9b8c);;
+  left: -16px;
+  top: 0;
+  animation: 
+    l6-1 1.5s linear infinite,
+    l6-2 0.5s cubic-bezier(0,200,.8,200) infinite;
+}
+.loaderLine:after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--primary-01, #6f9b8c); 
+  animation: l6-3 1.5s linear infinite;
+}
+@keyframes l6-0 {
+  0%,30%  {background-position: 0  0   ,50% 0   }
+  33%     {background-position: 0  100%,50% 0   }
+  41%,63% {background-position: 0  0   ,50% 0   }
+  66%     {background-position: 0  0   ,50% 100%}
+  74%,100%{background-position: 0  0   ,50% 0   }
+}
+@keyframes l6-1 {
+  90%  {transform:translateY(0)}
+  95%  {transform:translateY(15px)}
+  100% {transform:translateY(15px);left:calc(100% - 8px)}
+}
+@keyframes l6-2 {
+  100% {top:-0.1px}
+}
+@keyframes l6-3 {
+  0%,80%,100% {transform:translate(0)}
+  90%         {transform:translate(26px)}
 }
