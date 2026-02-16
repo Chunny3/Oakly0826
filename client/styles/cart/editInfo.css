@@ -1,0 +1,85 @@
+/* 半透明背景 + 置中 */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+
+.list {
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.form-row label {
+    width: 100px;
+    /* 左邊標題寬度 */
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.form-row input {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 8px 18px;
+    margin-left: 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.form-actions .cancel {
+    background-color: #ccc;
+    color: #000;
+}
+
+.form-actions .cancel:hover {
+    background-color: #b3b3b3;
+}
+
+.form-actions .save {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+
+.form-actions .save:hover {
+    background-color: #45a049;
+}

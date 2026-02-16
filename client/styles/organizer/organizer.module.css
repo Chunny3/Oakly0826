@@ -1,0 +1,318 @@
+/* 整理師介紹頁面 */
+.organizerHeader {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  padding: 0 24px;
+  background: url(/img/hui/space/organizer-banner.jpg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* 改成 cover */
+  background-position: 55% center;
+
+  @media (min-width: 1200px) {
+    height: 700px;
+  }
+
+  h1,
+  h3 {
+    position: relative;
+    z-index: 3;
+
+    @media (min-width: 1200px) {
+      margin-left: 40px;
+    }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 2;
+  }
+}
+
+.borderLeft {
+  @media (min-width: 1200px) {
+    padding-left:24px;
+    border-left: 7px solid  #FFF;
+  }
+}
+
+.section01Img {
+  height: 247px;
+  width: 100%;
+  object-fit: cover;
+
+  @media (min-width: 1200px) {
+    height: 630px;
+    width: 100%;
+  }
+}
+
+.imageContainer {
+  flex: 0 0 auto;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    /* 手機版時填滿寬度 */
+  }
+}
+
+.serviceContainer {
+  flex: 1 1 0;
+
+  @media (max-width: 767px) {
+    width: 100%;
+    /* 手機版時填滿寬度 */
+  }
+}
+
+.responsiveContainer {
+  display: flex;
+  gap: var(--bs-gap-xxxl, 3rem);
+  align-items: center;
+  flex-wrap: wrap;
+  width: 100%;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.serviceCardList {
+  display: flex;
+  padding-left: 26px;
+}
+
+.serviceCard {
+  padding-bottom: 24px;
+  align-items: flex-start;
+  gap: 8px;
+  border-bottom: 1px solid var(--primary-03, #919191);
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  @media (min-width: 1200px) {
+    padding-bottom: 32px;
+    gap: 12px;
+  }
+}
+
+.organizerCard {
+  width: 180px;
+  padding: 24px 20px 36px;
+  border: 1.5px solid var(--primary-04, #9db8af);
+  border-bottom-width: 12px;
+
+  @media (min-width: 1200px) {
+    width: 296px;
+    padding: 48px 36px 72px;
+    border-bottom-width: 25px;
+  }
+}
+
+.gap10 {
+  gap: 10px;
+
+  @media (min-width: 1200px) {
+    gap: 16px;
+  }
+}
+
+/* 圓形圖片容器 */
+.circleImage {
+  width: 120px;
+  height: 120px;
+  border: 2px solid var(--primary-04, #9db8af);
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  /* 預設背景色 */
+
+  @media (min-width: 1200px) {
+    width: 160px;
+    height: 160px;
+  }
+}
+
+/* 圓形圖片 */
+.circleImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.organizerGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 180px);
+  gap: 32px 16px;
+  justify-content: center;
+  max-width: 100%;
+
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(auto-fit, 296px);
+    gap: 32px;
+  }
+}
+
+.gap80 {
+  gap: 80px;
+
+  @media (min-width: 1200px) {
+    gap: 108px;
+  }
+}
+
+.steps {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  align-content: space-between;
+  background: var(--primary-04, #9db8af);
+  padding: 80px 24px;
+
+  @media (min-width: 1200px) {
+    padding: 128px 0;
+  }
+}
+
+.singleArrow {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: block;
+    width: 20px;
+    height: 33px;
+    background: url(/img/hui/icon/singleArrow.svg) no-repeat center;
+    background-size: contain;
+  }
+}
+
+.stepCardWidth {
+  width: 160px;
+
+  @media (min-width: 1200px) {
+    width: 210px;
+  }
+}
+
+/* 圓形圖片容器 */
+.stepCircleImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  /* 預設背景色 */
+
+  @media (min-width: 1200px) {
+    width: 135px;
+    height: 135px;
+  }
+}
+
+/* 圓形圖片 */
+.stepCircleImg {
+  object-fit: cover;
+  object-position: center;
+
+  @media (min-width: 1200px) {
+    width: 60px !important;
+    height: 60px !important;
+  }
+}
+
+.stepsGap {
+  gap: var(--gap-xxl, 40px) var(--gap-lg, 24px);
+}
+
+.responsiveContainer04 {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
+.imageContainer04 {
+  flex: 1;
+  min-width: 0;
+
+  @media (max-width: 767px) {
+    width: 100%;
+  }
+}
+
+.contentContainer04 {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-gap-xxxl, 3rem);
+
+  /* 手機版置中，桌面版靠左 */
+  align-items: center;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    align-items: flex-start;
+    text-align: left;
+  }
+}
+
+.section04Img {
+  width: 100%;
+  height: 216px;
+  object-fit: cover;
+
+  @media (min-width: 768px) {
+    height: 500px;
+  }
+}
+
+.imgAdd {
+  width: 150px;
+  height: 150px;
+  background-color: var(--color-gray-100, #ededed);
+  border: 1px solid var(--primary-03, #919191);
+  cursor: pointer;
+}
+
+.imgAddImg {
+  width: 40px;
+  height: 40px;
+  background: url(/img/hui/icon/imgAdd.svg) no-repeat center;
+}
+
+.maxWidth960 {
+  max-width: 960px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.previewImg{
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}

@@ -1,16 +1,31 @@
 "use client"
 
 // import { useArticle } from "@/hooks/use-article";
+import { useState } from "react";
 import "@/styles/article/sideBar.css";
 
 export default function SideBar() {
+    // 搜尋文章處理事件
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const handleSearch =()=>{
+        if(searchQuery.trim() === ""){
+            alert("請輸入搜尋關鍵字");
+            return;
+        }
+        console.log("搜尋關鍵字: ", searchQuery);
+        
+    }
+
+
+
     return (
 
 
         <aside className="sidebar">
             <h5 className="mb-3">搜尋文章</h5>
             <div className="input-group mb-3">
-                <input type="text" className="form-control" placeholder="搜尋" />
+                <input type="text" name="text" className="form-control" placeholder="搜尋" ></input>
                 <button className="btn" type="button"> <i className="fa-solid fa-magnifying-glass"></i></button>
             </div>
             <div className="line"></div>

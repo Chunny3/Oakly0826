@@ -1,0 +1,29 @@
+/* 共用基底 */
+.btn {
+  display: block; 
+  margin: 0 auto;
+  padding: 10px 16px;   /* 調整按鈕厚度（上下/左右） */
+  font-size: 16px;      /* 文字大小 */
+  line-height: 1;       /* 避免文字加高 */
+  height: 44px;         /* 想固定高度就加這行；不要固定就刪掉 */
+  cursor: pointer; /* 游標小手 */
+  /* border-radius: 1px; */
+}
+
+/* variant */
+.primary01 { background-color: #6c9c8f; color: #fff; border: none;}
+.primary01:hover { filter: brightness(0.95); }
+.white { background-color: #fff; color: #6c9c8f; border: 1px solid #6c9c8f; }
+.primary01:hover { filter: brightness(0.95); }
+
+/* size */
+.sm { padding: 8px 12px; font-size: 16px; height: 36px; }
+.md { padding: 10px 16px; font-size: 16px; height: 44px; }
+.lg { padding: 6px 12px; font-size: 16px; height: 44px; width: 100%;}
+
+/* RWD 可以照你之前的規則 */
+@media (max-width: 576px) {
+  .btn {
+    width: 100%;
+  }
+}

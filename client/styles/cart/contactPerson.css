@@ -2,6 +2,11 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+    overflow: hidden;
+}
+
+.contact-person h4{
+    display: block;
 }
 
 .contact {
@@ -15,6 +20,7 @@
     flex-direction: row;
     align-items: flex-start;
 }
+
 .contact-detail2 {
     display: flex;
     width: 400px;
@@ -46,19 +52,79 @@
     color: var(--secondary-02);
 }
 
-.contact-line{
+.contact-line {
     width: 1px;
     height: 244px;
     background-color: var(--color-gray-600);
     margin: auto;
 }
 
-.same-person{
+.same-person {
     display: flex;
     flex-direction: row;
     align-items: center;
 }
 
-.same-person p{
+.same-person p {
     padding-left: 10px;
+}
+
+.phone {
+    display: none;
+}
+
+@media (max-width: 430px) {
+    .pc {
+        display: none;
+    }
+
+    .phone {
+        display: flex;
+    }
+
+    .toggleBtn.phone {
+        position: relative;
+        width: calc(100% + 40px);
+        margin-left: -20px;
+        border: 1px solid var(--primary-05);
+        background-color: var(--white);
+        height: 84px;
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .toggleBtn.active.phone {
+        border: 1px solid var(--primary-05);
+        background-color: var(--primary-04);
+    }
+
+    .contact.phone {
+        padding: 40px 20px;
+    }
+
+    .contact-detail.phone {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .details.phone {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .contact-line.phone {
+        width: 100%;
+        height: 1px;
+        background-color: var(--color-gray-600);
+        margin: 20px 0;
+    }
+
+    .same-person.phone {
+        display: flex;
+        flex-direction: row;
+    }
 }

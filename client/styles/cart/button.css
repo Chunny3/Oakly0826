@@ -37,6 +37,17 @@
     background-color: var(--white, #FFF);
 }
 
+.white-button h6 {
+    color: var(--primary-05);
+
+}
+
 .white-button:hover {
     background-color: var(--primary-04, #9DB8AF);
+    
+}
+
+
+@media (max-width: 430px) {
+
 }

@@ -1,0 +1,297 @@
+/* .container {
+    color: #919191;
+    padding: 20px 0;
+} */
+
+.userContainer {
+    color: #919191;
+    /* 內容最大寬，但不超出視窗 */
+    max-width: min(1440px, 100%);
+    margin-inline: auto;
+    /* 置中 */
+    /* 上方距離 */
+    padding-block: 40px;
+    /* 下方距離多一點 */
+    margin-bottom: 80px;
+    /* RWD 左右留白：16px ~ 40px，會隨螢幕寬度平滑變化 */
+    padding-inline: clamp(16px, 4vw, 60px);
+}
+
+/* 整體左右佈局：用 flex 取代 row/col */
+.layout {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 60px;
+}
+
+/* Sidebar：固定寬度 + 與表單間距（依設計稿調整數值） */
+.sidebarWrapper {
+
+    /* padding: 60px; */
+    /* 側欄固定 220px；想更寬就改 */
+    flex: 0 0 256px;
+    /* 中間白邊距，設計稿看起來約 48~60px */
+    /* margin-right: 0px; */
+}
+
+.content {
+    /* 在 flex 版型下吃掉剩餘空間 */
+    flex: 1;
+    /* 允許內容在需要時縮，避免水平溢出 */
+    min-width: 0;
+    /* 右邊空白處 */
+    /* padding-right: 60px ; */
+}
+
+.avatarUpload {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.avatarUpload label {
+    cursor: pointer;
+}
+
+.avatarImg {
+    width: 160px;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+}
+
+/* 避免 CSS Modules 的「pure selector」錯誤：加上本地類名當前綴 */
+.uploader input[type="file"] {
+    display: none;
+}
+
+
+
+.formButtons {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btnSave {
+    background-color: #6c9c8f;
+    color: #fff;
+    border: none;
+}
+
+.btnSave:hover {
+    background-color: #5b887b;
+}
+
+.btnCancel {
+    background-color: #fff;
+    color: #6c9c8f;
+    border: 1px solid #6c9c8f;
+}
+
+.btnCancel:hover {
+    background-color: #f0f0f0;
+}
+
+/* .favoritesRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid #9db8af;
+    display: grid;
+    grid-template-columns: 140px 1fr 120px 80px;
+    140px 放圖片，1fr 放商品名，120px 放價錢，80px 放 icon 區
+    align-items: center;
+    padding: 20px 0;
+    border-bottom: 1px solid #9db8af;
+} */
+
+.productName,
+.productPrice {
+    color: #494949;
+    font-weight: 600;
+}
+
+.iconActions {
+    flex: 0.2;
+    display: flex;
+    gap: 16px;
+    font-size: 22px;
+    padding: 80px 0px 80px 20px;
+
+}
+
+.heart {
+    color: #d4a373;
+    cursor: pointer;
+}
+
+.cart {
+    cursor: pointer;
+}
+
+.favoritesCard {
+    display: flex;
+    gap: 20px;
+    padding: 20px 0;
+    border-bottom: 1px solid #9db8af;
+}
+
+.favoritesCard img {
+    width: 180px;
+    height: 140px;
+    object-fit: cover;
+}
+
+.favoritesBody {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.productName {
+    font-weight: 600;
+    color: #494949;
+    margin-bottom: 8px;
+}
+
+.productPrice {
+    font-weight: 600;
+    color: #494949;
+    margin-bottom: 16px;
+}
+
+.addCartBtn {
+    align-self: flex-start;
+    background-color: #6c9c8f;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.addCartBtn:hover {
+    background-color: #5b887b;
+}
+
+/* === 價格下方：顏色 / 尺寸展示膠囊 === */
+.optionDisplay {
+    margin-top: 8px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.optionPill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid #dcdcdc;
+    border-radius: 10px;
+    background: #f7f8f8;
+    /* 淺灰底，接近你截圖 */
+    color: #6b6b6b;
+    line-height: 1;
+}
+
+.colorDotSm {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, .15);
+}
+
+/* 數量控制容器 */
+.qtyControl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    /* ← 控制數字和按鈕之間的距離，原本是 6，可以加大 */
+    margin-top: 4px;
+}
+
+/* 左右按鈕 */
+.qtyBtn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+    line-height: 1;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.qtyBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* 中間數字框 */
+.qtyBox {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+
+
+/* 手機版 (<= 430px) */
+@media (max-width: 430px) {
+    .userContainer {
+        padding-block: 50px;
+        /* 上下間距縮小 */
+        padding-inline: 24px;
+        /* 左右固定邊距，避免太擠 */
+    }
+
+    .layout {
+        flex-direction: column;
+        gap: 0px;
+    }
+
+    .sidebarWrapper {
+        display: none;
+        /* 手機版隱藏側欄 */
+    }
+
+    .content {
+        flex: 1;
+        min-width: 100%;
+        /* 表單內容滿版 */
+    }
+
+    .avatarImg {
+        width: 120px;
+        /* 頭像縮小 */
+        height: 120px;
+    }
+
+    .formButtons {
+        margin-top: 50px;
+        /* 上方間隔加大 */
+        gap: 4px;
+        /* 兩顆按鈕之間縮小一點 */
+    }
+
+    .favoritesRow {
+        grid-template-columns: 100px 1fr;
+        /* 收藏清單：縮圖 + 內容 */
+        gap: 12px;
+    }
+
+}

@@ -1,75 +1,111 @@
 .amount-list {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-    gap: 20px;
-    align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 20px;
+  width: 100%;
+}
+
+.amount-list.fin {
+  width: 330px;
 }
 
 .pAmount {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
 }
 
 .choose-cp {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    align-self: stretch;
+  display: flex;
+  
+  align-items: center;
+  align-self: stretch;
+  justify-content: space-between;
 }
 
-.choose-cp button {
-    display: flex;
-    padding: 5px var(--card-padding-sm, 20px);
-    justify-content: space-between;
-    align-items: center;
-    color: var(--primary-05);
-    flex: 1;
-    border-radius: 10px;
-    border: 2px solid var(--color-gray-600, #ABABAB);
-    background-color: var(--white, #FFF);
-    box-shadow: 10px 10px 35px 0 rgba(0, 0, 0, 0.25);
-}
 
-.choose-cp button:hover {
-    background-color: var(--primary-04);
-    border: 2px solid var(--primary-04, #ABABAB);
-    color: var(--white);
-}
 
 .cp-discount {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  align-self: stretch;
 }
 
 .fee {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
 }
 
 .total {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    align-self: stretch;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-self: stretch;
+
 }
 
+
 .nextOrBack {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    align-self: stretch;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.nextOrBack-phone {
+  display: none;
 }
 
 .t-line {
-    width: 408px;
-    height: 1px;
-    background-color: var(--color-gray-700);
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-gray-700);
+}
+
+.phone {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .h5 {
+    display: none;
+  }
+
+  .total {
+    display: none;
+  }
+
+  .total.phone {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+
+  }
+
+
+  .nextOrBack {
+    display: none;
+  }
+
+  .nextOrBack-phone {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .t-line {
+    width: 100%S;
+  }
+
+  .nextOrBack-phone .green-button {
+    border-radius: 5px;
+  }
 }

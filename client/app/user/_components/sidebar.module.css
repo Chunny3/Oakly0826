@@ -1,0 +1,67 @@
+.sidebar a {
+  /* display: block; */
+  display: flex;
+  align-items: center;
+  /* icon 和文字間距 */
+  gap: 15px;
+  /* 上下距離調大 */
+  padding: 18px 16px 18px 20px;
+  /* border-bottom: 1px solid #ccc; */
+  color: #919191;
+  /* 移除 <a> 預設的底線樣式 */
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border-left: 3px solid transparent;
+   /* 預留左側線條的位置 */
+  /* font-size: 14px;*/
+  font-weight: 400; 
+
+}
+
+.sidebar a:hover {
+  /* color: #719a8b; */
+  /* 淡色背景 */
+  background-color: rgb(113, 154, 139, 0.1);
+  /* 左側色塊 */
+  border-left: 3px solid #719a8b;
+  
+}
+
+.sidebar a.active {
+  color: #719a8b;
+  /* 淡色背景 */
+  background-color: rgb(113, 154, 139, 0.1);
+  /* 左側色塊 */
+  border-left: 3px solid #719a8b;
+  
+}
+
+
+/* .sidebar a:hover img {
+  content: url('/img/ting/icon-sb-userH.svg');
+} */
+
+/*   Hover 換圖設定區     */
+/* .user:hover img {
+  content: url('/img/ting/sb/icon-sb-userH.svg');
+}
+
+.order:hover img {
+  content: url('/img/ting/sb/icon-sb-orderH.svg');
+}
+
+.coupon:hover img {
+  content: url('/img/ting/sb/icon-sb-couponH.svg');
+}
+
+.heart:hover img {
+  content: url('/img/ting/sb/icon-sb-heartH.svg');
+}
+
+.bookmark:hover img {
+  content: url('/img/ting/sb/icon-sb-bookmarkH.svg');
+}
+
+.reservation:hover img {
+  content: url('/img/ting/sb/icon-sb-reservationH.svg');
+} */

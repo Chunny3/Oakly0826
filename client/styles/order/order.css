@@ -1,0 +1,934 @@
+/* 重置樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+}
+
+body {
+    font-family: 'Inter', 'Noto Sans TC';
+    line-height: 1.6;
+    color: #333;
+    width: 100%;
+    min-width: 1200px;
+    max-width: 1920px;
+    margin: 0 auto;
+    background-color: #f5f5f5;
+}
+
+.container {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 64px;
+    background-color: #fff;
+}
+.more-items{
+    text-align: right;
+}
+/* 頂部標題欄 */
+.top-bar {
+    background-color: #f0f0f0;
+    padding: 12px 0;
+}
+.product-item{
+    margin-top: 25px;
+}
+.page-title {
+    font-size: 16px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* 主要導航欄 */
+.navbar {
+    background: #fff;
+    padding: 20px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.navbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+}
+
+.logo h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #719A8B;
+}
+
+.nav-menu {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-link {
+    color: #333;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #719A8B;
+}
+
+.nav-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nav-icon {
+    color: #333;
+    font-size: 18px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.nav-icon:hover {
+    color: #719A8B;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.user-section:hover {
+    color: #719A8B;
+}
+
+.user-section i {
+    font-size: 16px;
+}
+
+.order-list {
+    display: flex;
+    width: 100%;
+}
+
+/* 訂單狀態標籤頁 */
+.order-tabs {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 10px;
+}
+
+
+
+.tab-btn {
+    border: none;
+    background: none;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    display: inline-flex;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    color: #6A6A6A;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 500;
+    line-height: 28px;
+    letter-spacing: 2px;
+    word-wrap: break-word
+}
+
+.tab-btn.active {
+    color: #719A8B;
+    border-bottom-color: #719A8B;
+}
+
+.tab-btn:hover {
+    color: #719A8B;
+}
+
+
+/* 主要內容區域 */
+.main-content {
+    display: flex;
+    padding: 46px 60px;
+    overflow: visible;
+    gap:60px;
+    background-color: white;
+
+    /* 移除任何 overflow 設定 */
+
+}
+
+
+
+/* 左側邊欄 */
+.sidebar {
+    width: 360px;
+    background: #fff;
+    color: #919191;
+    font-size: 16px;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+}
+
+.user-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.menu-item:hover {
+    background: rgba(113, 154, 139, 0.05);
+    border-left-color: #719A8B;
+}
+
+.menu-item.active {
+    background: rgba(113, 154, 139, 0.1);
+    border-left-color: #719A8B;
+    color: #719A8B;
+}
+
+.menu-item i {
+    font-size: 18px;
+    width: 20px;
+    text-align: center;
+}
+
+.menu-item span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* 右側訂單摘要內容 */
+.order-info {
+    width: 100%;
+}
+
+.order-detail-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+}
+
+/* 搜尋欄 */
+.search-section {
+    padding: 16px 10px;
+    width: 100%;
+
+
+
+
+}
+
+.search-bar {
+    width: 100%;
+    height: 52px;
+    padding-left: 24px;
+    background: #F1F1F1;
+    padding-right: 24px;
+    border-radius: 50px;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 24px;
+    display: inline-flex;
+}
+
+.search-bar:focus-within {
+    border-color: #ABABAB;
+}
+
+.search-bar i {
+    color: #ABABAB;
+    font-size: 16px;
+}
+
+.search-bar input {
+    flex: 1;
+    border: none;
+    outline: none;
+    color: #ABABAB;
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    background: #F1F1F1;
+}
+
+.search-bar input::placeholder {
+    color: #999;
+    background: #F1F1F1;
+}
+
+/* 訂單編號和狀態 */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.order-number {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    gap: 10px;
+    color: #6A6A6A;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 36px;
+    letter-spacing: 2px;
+    word-wrap: break-word
+}
+
+.order-status {
+   width: 100%;
+   height: 100%; 
+   padding-left: 10px;
+    padding-right: 10px; 
+    opacity: 0.80; 
+    border-radius: 5px; 
+    justify-content: center; 
+    align-items: center; 
+    display: inline-flex;
+    background-color: #DBA783; 
+
+}
+
+.status-btn {
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+ 
+}
+/* 
+.status-btn.new {
+    background: #D9A78B;
+    color: #fff;
+}
+
+.status-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+} */
+
+/* 訂單商品卡片 */
+.order-item {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.order-item-card {
+    margin-bottom: 25px;
+}
+
+.product-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 25px;
+    padding: 25px;
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.product-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.product-name {
+    color: #6A6A6A;
+    font-size: 16px;
+    font-family: Noto Sans TC;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    padding-bottom: 12px;
+}
+
+.product-specs {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 18px;
+   
+}
+
+.product-specs span {
+    color: #6A6A6A;
+    font-size: 16px;
+    font-family: Noto Sans TC;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+}
+
+.pricing-info {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 15px 0;
+    border-top: 1px solid #f5f5f5;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+.quantity-price {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.subtotal {
+    font-size: 14px;
+    color: #333;
+}
+
+.shipping-fee {
+    font-size: 14px;
+    color: #333;
+}
+
+
+
+.info-tag {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: left;
+    margin-top: 18px;
+    gap: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    color: #6A6A6A;
+    font-size: 16px;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 28px;
+    letter-spacing: 2px;
+    word-wrap: break-word;
+}
+
+.delivery-info {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    padding-top: 12px;
+    color: #6A6A6A;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 500;
+    line-height: 24px;
+
+}
+
+
+
+.order-details {
+    outline: 1px #919191 solid;
+    width: 100%;
+    height: 100%;
+    padding: 46px;
+    border-radius: 50px;
+    outline-offset: -1px;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: 43px;
+    display: inline-flex;
+    cursor: pointer;
+    
+}
+
+
+.pricing-details {
+    display: flex;
+    justify-content: space-between;
+    align-content: center;
+    padding-bottom: 18px;
+    padding-top: 12px;
+
+}
+
+.discount-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    gap: 12px;
+}
+
+.details {
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-content: center;
+    gap: 12px;
+
+}
+
+.details span {
+    color: #8B8B8B;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word
+}
+
+.quantity-price {
+    color: #6A6A6A;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word
+}
+
+.discount {
+
+    text-align: end;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    color: #D9A78B;
+}
+
+/* 訂單總金額 */
+.order-total {
+    text-align: right;
+    margin-top: 24px;
+    padding: 10px;
+    color: #6A6A6A;
+font-size: 16px;
+font-family: Noto Sans TC;
+font-weight: 900;
+line-height: 28px;
+letter-spacing: 2px;
+word-wrap: break-word
+}
+
+/* 操作按鈕 */
+.action-button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-confirm {
+    width: 40px;
+    height: 40px;
+    background: #ccc;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-confirm:hover {
+    background: #999;
+}
+
+
+/* 響應式設計 */
+@media (max-width: 1920px) {
+    body {
+        min-width: 1200px;
+        max-width: 100%;
+    }
+
+    .container {
+        max-width: 100%;
+        padding: 0px 60px;
+    }
+
+    .content-wrapper {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 1440px) {
+    .content-wrapper {
+        grid-template-columns: 250px 1fr;
+        gap: 30px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .content-wrapper {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .sidebar {
+        order: 2;
+    }
+
+    .order-summary-content {
+        order: 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 20px;
+    }
+
+    .tab-buttons {
+        flex-wrap: wrap;
+    }
+
+    .tab-btn {
+        flex: 1;
+        min-width: 120px;
+        padding: 12px 20px;
+    }
+
+    .product-card {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        text-align: center;
+    }
+
+    .order-total {
+        text-align: center;
+    }
+}
+
+/* 手機版樣式調整 - 430px 以下 */
+@media (max-width: 430px) {
+    body {
+        min-height: 100vh;
+    }
+
+    .container {
+        padding: 0 15px;
+    }
+
+    /* 主要內容區域調整 */
+    .main-content {
+        padding: 20px 0;
+        flex-direction: column;
+        /* 改為垂直排列 */
+
+    }
+
+    /* 左側邊欄調整 */
+    .sidebar {
+        display: none;
+        /* 隱藏側邊欄 */
+    }
+
+    /* 右側訂單摘要內容調整 */
+    .order-detail-content {
+        width: 100%;
+        padding: 0 20px;
+        /* 減少左右內距 */
+        gap: 20px;
+    }
+
+    /* 搜尋欄調整 */
+    .search-section {
+        padding: 16px 0;
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .search-bar {
+        width: 100%;
+        padding: 12px 16px;
+        background: #F1F1F1;
+        border-radius: 50px;
+        gap: 12px;
+    }
+
+    .search-bar i {
+        font-size: 14px;
+    }
+
+    .search-bar input {
+        font-size: 14px;
+    }
+
+    /* 訂單編號和狀態調整 */
+    .order-header {
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .order-number {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .status-btn {
+        padding: 8px 16px;
+        background: #D9A78B;
+        /* 淺棕色按鈕 */
+        color: white;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    /* 訂單商品卡片調整 */
+    .order-item-card {
+        margin-bottom: 20px;
+    }
+
+    .product-card {
+        background: white;
+        border: 1px solid #719A8B;
+        /* 綠色邊框 */
+        border-radius: 12px;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .product-image {
+        width: 100%;
+        height: 120px;
+        border-radius: 8px;
+        background: #f8f9fa;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        max-width: 200px;
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    .product-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .product-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        text-align: left;
+    }
+
+    .product-specs {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        text-align: left;
+    }
+
+    .product-specs span {
+        font-size: 14px;
+        color: #666;
+    }
+
+    .pricing-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 0;
+        border-top: 1px solid #f0f0f0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .quantity-price {
+        font-size: 14px;
+        font-weight: 600;
+        color: #333;
+        text-align: right;
+    }
+
+    .discount {
+        font-size: 14px;
+        color: #D9A78B;
+        font-weight: 500;
+        text-align: right;
+    }
+
+    .delivery-info {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 16px 0;
+    }
+
+   
+
+
+    /* 訂單總金額調整 */
+    .order-total {
+        text-align: right;
+        font-size: 18px;
+        font-weight: 700;
+        color: #333;
+        padding: 20px 0;
+        margin-top: 20px;
+    }
+
+    /* 返回按鈕 */
+    .action-button {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 20px;
+    }
+
+    .btn-confirm {
+        width: auto;
+        min-width: 80px;
+        height: 40px;
+        background: #ccc;
+        border: none;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #333;
+        padding: 0 20px;
+        cursor: pointer;
+    }
+
+    /* 訂單狀態標籤頁調整 */
+    .order-tabs {
+        width: 100%;
+        padding: 0;
+        margin-bottom: 20px;
+    }
+
+    .tab-btn {
+        flex: 1;
+        min-width: auto;
+        padding: 12px 8px;
+        font-size: 12px;
+        text-align: center;
+        border-bottom: 2px solid transparent;
+    }
+
+    .tab-btn.active {
+        border-bottom-color: #719A8B;
+        color: #719A8B;
+    }
+
+    /* 整體佈局調整 */
+    .order-detail-content {
+        max-width: 100%;
+        margin: 0 auto;
+    }
+
+    /* 確保內容不會超出螢幕 */
+    .order-details {
+        display: flex;
+        flex-direction: column;
+        outline: 1px #8B8B8B solid;
+        width: 100%;
+        height: 100%;
+        padding: 46px;
+        border-radius: 50px;
+        outline-offset: -1px;
+        justify-content: flex-start;
+        align-items: flex-start;
+        gap: 43px;
+        display: inline-flex;
+
+    }
+}

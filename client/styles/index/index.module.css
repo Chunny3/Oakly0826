@@ -1,0 +1,577 @@
+/* =====================  首頁  ===================== */
+.cateIcons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--gap-xxl);
+
+  @media (min-width: 1200px) {
+    gap: 0;
+    width: 952px;
+    justify-content: space-between;
+  }
+}
+
+.cate {
+  gap: var(--gap-sm);
+  text-decoration: none;
+  color: var(--primary-02, #9fa79a);
+  text-align: center;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--primary-03);
+
+    /* hover 整個區塊時，觸發內部圖片的效果 */
+    .cateIcon {
+      opacity: 1;
+
+      &.livingroom {
+        background: url('/img/hui/icon/armchair.gif') lightgray 50% / cover no-repeat;
+      }
+
+      &.kitchen {
+        background: url('/img/hui/icon/kitchen.gif') lightgray 50% / cover no-repeat;
+      }
+
+      &.bedroom {
+        background: url('/img/hui/icon/bed.gif') lightgray 50% / cover no-repeat;
+      }
+
+      &.kidroom {
+        background: url('/img/hui/icon/cradle.gif') lightgray 50% / cover no-repeat;
+      }
+
+      &.office {
+        background: url('/img/hui/icon/teacher-desk.gif') lightgray 50% / cover no-repeat;
+      }
+
+      &.storage {
+        background: url('/img/hui/icon/shelves.gif') lightgray 50% / cover no-repeat;
+      }
+    }
+  }
+}
+
+.cateIcon {
+  width: 98px;
+  height: 98px;
+  aspect-ratio: 1 / 1;
+  opacity: 0.65;
+  transition: all 0.3s ease;
+
+  &.livingroom {
+    background: url('/img/hui/icon/armchair.jpg') lightgray 50% / cover no-repeat;
+  }
+
+  &.kitchen {
+    background: url('/img/hui/icon/kitchen.jpg') lightgray 50% / cover no-repeat;
+  }
+
+  &.bedroom {
+    background: url('/img/hui/icon/bed.jpg') lightgray 50% / cover no-repeat;
+  }
+
+  &.kidroom {
+    background: url('/img/hui/icon/cradle.jpg') lightgray 50% / cover no-repeat;
+  }
+
+  &.office {
+    background: url('/img/hui/icon/teacher-desk.jpg') lightgray 50% / cover no-repeat;
+  }
+
+  &.storage {
+    background: url('/img/hui/icon/shelves.jpg') lightgray 50% / cover no-repeat;
+  }
+}
+
+.card1 {
+  /* min-width: 160px; */
+  /* max-width: 200px; */
+  max-width: 160px;
+  text-decoration: none;
+
+  h5 {
+    color: var(--color-gray-700, #8b8b8b);
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* 最多顯示2行 */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 2.8em; /* 2行的高度，確保統一 */
+    word-break: break-word;
+  }
+
+  .price {
+    color: var(--color-gray-800, #6a6a6a);
+    text-align: center;
+
+    .currency {
+      font-size: var(--font-en-h5, 18px);
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .amount {
+      font-size: var(--font-en-h4, 20px);
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+  }
+    @media (min-width: 1200px) {
+        max-width: 260px;
+    }
+}
+
+.productImgWrapper {
+  position: relative;
+  display: block;
+
+  /* &::before {
+    content: '';
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    width: 18px;
+    height: 17px;
+    background-image: url(@/public/img/heart-outline.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    opacity: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 1;
+  } */
+
+  &:hover {
+    &::before {
+      opacity: 1;
+    }
+  }
+}
+
+.productImg {
+  object-fit: contain;
+  transition: all 0.3s ease;
+
+  @media (min-width: 1200px) {
+    padding: 0 24px;
+    width: 260px;
+    height: 320px;
+  }
+
+  &:hover {
+    opacity: 0.5;
+    background: #fff;
+  }
+}
+
+.productGap {
+  gap: var(--gap-xxxl);
+
+  @media (min-width: 1200px) {
+    gap: var(--gap-xl) var(--gap-xxxl);
+  }
+}
+
+.arrow {
+  padding-top: 24px;
+
+  .arrowLeft {
+    width: 28px;
+    height: 28px;
+    background: url(/img/hui/icon/arrow-left.svg) center / cover no-repeat;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: url(/img/hui/icon/arrow-left-fill.svg) center / cover no-repeat;
+    }
+
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &:active:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+
+  .arrowRight {
+    width: 28px;
+    height: 28px;
+    background: url(/img/hui/icon/arrow-right.svg) center / cover no-repeat;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: url(/img/hui/icon/arrow-right-fill.svg) center / cover no-repeat;
+    }
+
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &:active:focus {
+      outline: none !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+  }
+}
+
+.section03Img {
+  height: 356px;
+  width: 100%;
+  object-fit: cover;
+  margin-bottom: 28px;
+
+  @media (min-width: 1200px) {
+    margin-bottom: 0;
+  }
+}
+
+.section03Gap {
+  gap: 0;
+
+  @media (min-width: 1200px) {
+    gap: var(--gap-xxxl);
+  }
+}
+
+.py28 {
+  @media (min-width: 1200px) {
+    padding: 28px 0;
+  }
+}
+
+.leftLine {
+  @media (min-width: 1200px) {
+    padding-left: 16px;
+    border-left: 4px solid var(--primary-03, #919191);
+  }
+}
+
+.section04Content {
+  padding: 50px 24px;
+  background-color: var(--color-gray-50);
+
+  @media (min-width: 1200px) {
+    padding: 50px 64px;
+  }
+}
+
+.section04Img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  @media (min-width: 1200px) {
+    display: none;
+    height: 596px;
+  }
+}
+
+.icon1 {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &::before {
+    @media (min-width: 1200px) {
+      content: url('/img/hui/icon/spaceIcon.svg');
+      display: block;
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.icon2 {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &::before {
+    @media (min-width: 1200px) {
+      content: url('/img/hui/icon/use.svg');
+      display: block;
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
+
+.icon3 {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &::before {
+    @media (min-width: 1200px) {
+      content: url('/img/hui/icon/day.svg');
+      display: block;
+      width: 40px;
+      height: 38px;
+    }
+  }
+}
+
+.gap32 {
+  gap: 32px;
+
+  @media (min-width: 1200px) {
+    gap: 40px;
+  }
+}
+
+.section04ImgLg {
+  display: none;
+
+  @media (min-width: 1200px) {
+    display: block;
+    width: 450px;
+    height: 596px;
+  }
+}
+
+.articleArea {
+  gap: 80px;
+  padding: 0 80px;
+  overflow-x: auto;
+  width: 100%;
+  user-select: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  .articleArea:active {
+    cursor: grabbing;
+  }
+
+  @media (min-width: 1200px) {
+    gap: 140px;
+    padding: 0 140px;
+  }
+}
+
+.mt16 {
+  margin-top: 16px;
+}
+
+.articleCard {
+  width: 240px;
+
+  @media (min-width: 1200px) {
+    width: 315px;
+  }
+}
+
+.articleImg {
+  object-fit: contain;
+
+  @media (min-width: 1200px) {
+    width: 315px;
+    height: 210px;
+  }
+}
+
+.articleTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  /* 限制顯示2行 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.articleContent {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  /* 限制顯示2行 */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.articleMiddle {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--primary-03, #919191);
+
+  @media (min-width: 1200px) {
+    padding-bottom: 32px;
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.imageWrapper::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.45);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* =========== 首頁HERO旋轉木馬 ========== */
+
+.carouselWrapper {
+  position: relative;
+  height: 100vh;
+
+  @media (min-width: 1200px) {}
+}
+
+.headBg {
+  width: 100%;
+  height: 100%;
+  filter: blur(10px);
+  object-fit: cover;
+  z-index: 1;
+}
+
+.leftTitle {
+  @media (min-width: 1200px) {
+    padding-bottom: 228px;
+  }
+
+  h1 {
+    padding: 0 0 36px 0;
+    border-bottom: 2px solid #fff;
+
+    @media (min-width: 1200px) {
+      padding: 48px 0;
+    }
+  }
+
+  h1+p {
+    padding-top: 28px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 28px;
+    /* 175% */
+    letter-spacing: 1px;
+
+    @media (min-width: 1200px) {
+      padding-top: 48px;
+      font-size: 26px;
+      line-height: 44px;
+      /* 169.231% */
+      letter-spacing: var(--font-tw-letter-spacing-2, 2px);
+    }
+  }
+}
+
+.textAndImg {
+  position: absolute;
+  flex-direction: column;
+  padding: 18vh 24px 0 24px;
+  gap: 40px;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  z-index: 10;
+
+  @media (min-width: 1200px) {
+    gap: 0;
+    flex-direction: row;
+    padding: 18vh 0 0 64px;
+    justify-content: space-between;
+  }
+}
+
+.leftView {
+  @media (min-width: 1200px) {
+    min-width: 568px;
+    padding-right: 60px;
+  }
+}
+
+.rightView {
+  overflow: hidden;
+
+  @media (min-width: 1200px) {
+    max-width: 1020px;
+    height: 600px;
+    overflow: hidden;
+  }
+}
+
+.headRight {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  gap: var(--gap-lg, 32px);
+  transition: transform 0.5s ease;
+}
+
+.slide0 {
+  transform: translateX(0px);
+
+  @media (min-width: 1200px) {
+    transform: translateX(0px);
+  }
+}
+
+.slide1 {
+  transform: translateX(-100px);
+
+  @media (min-width: 1200px) {
+    transform: translateX(-200px);
+  }
+}
+
+.slide2 {
+  transform: translateX(-140px);
+
+  @media (min-width: 1200px) {
+    transform: translateX(-350px);
+  }
+}
+
+.galleryImage {
+  width: 150px;
+  height: 194px;
+  object-fit: cover;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  /* 加上縮放動畫 */
+
+  @media (min-width: 1200px) {
+    width: 400px;
+    height: 520px;
+  }
+}
+
+.galleryImage.selected {
+  width: 172px;
+  height: 220px;
+
+  @media (min-width: 1200px) {
+    width: 460px;
+    height: 590px;
+  }
+}
