@@ -2,7 +2,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-
+    gap: 20px;
+    margin-bottom: 40px;
 }
 
 .main-side {
@@ -14,11 +15,21 @@
 
 }
 
-.cart-main-first {
+.cart-main-first.pc {
     width: 1440px;
     display: flex;
+    padding: 32px 48px;
     flex-direction: column;
+    gap: 20px;
     align-items: center;
+    border-radius: 5px;
+    border: 2px solid var(--color-gray-200, #e4e4e4);
+    background-color: var(--white, #fff);
+    box-shadow: 10px 10px 35px 0 rgba(0, 0, 0, 0.25);
+}
+
+.cart-main-first.pc h4{
+    border-bottom: 0;
 }
 
 .cart-main-first i {
@@ -26,11 +37,15 @@
     color: var(--primary-05);
 }
 
-.cart-main-first.fin-card {
+.cart-main-first.fin-card.pc {
     display: flex;
     flex-direction: column;
     align-items: start;
     gap: 20px;
+}
+
+.cart-main-first.fin-card.pc h5{
+    width: 100%;
 }
 
 .card-left {
@@ -62,17 +77,47 @@
 
 .cart-card {
     width: 100%;
-    background-color: var(--color-gray-100);
+}
+
+.cart-main{
     padding: 20px;
-    border-radius: 10px;
+    background-color: var(--color-gray-100);
+    margin-bottom: 10px;
+    border-radius: 20px;
+    
 }
 
 .orange-side {
     width: 100%;
     display: flex;
     flex-direction: row;
+    padding: 32px 48px;
+    gap: 50px;
+    justify-content: space-between;
+    box-shadow: none;
+    border-radius: 15px;
+    background-color: var(--secondary-3, #f0d2bc);
+}
+.orange-side.fin {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    padding: 32px 48px;
+    gap: 50px;
+    justify-content: flex-end;
+    box-shadow: none;
+    border-radius: 15px;
+    background-color: var(--secondary-3, #f0d2bc);
+}
+
+.gray-side {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
     gap: 50px;
     box-shadow: none;
+    border-radius: 15px;
+    background-color: var(--color-gray-100);
 }
 
 .fin-info {
@@ -119,4 +164,140 @@
     gap: 50px;
     justify-content: center;
     padding-bottom: 50px;
+}
+
+
+.phone {
+    display: none;
+}
+
+
+@media (max-width: 430px) {
+    .phone {
+        display: block;
+    }
+
+    .pc {
+        display: none;
+    }
+
+    .top {
+        display: none;
+    }
+
+    .cart {
+        padding: 0 10px;
+    }
+
+    .main-side.phone {
+        width: 100%;
+        padding: 20px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .cart-main-first.phone {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .cart-main-first.phone h4 {
+        display: none;
+    }
+
+    .cart-main-first h6 {
+        padding: 10px 40px;
+    }
+
+    .cart-main-first.fin-card.phone {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .fin-card-table {
+        width: 100%;
+        padding: 20px;
+        border-collapse: collapse;
+        /* 建議加這個，讓格線更緊貼 */
+        table-layout: fixed;
+        /* 固定表格寬度 */
+    }
+
+    .fin-card-table tr {
+        border: 1px solid var(--color-gray-600);
+    }
+
+    .fin-card-table td,
+    .fin-card-table th {
+        padding: 10px 10px;
+    }
+
+    .fin-card-details td,
+    .fin-card-details th {
+        padding: 0;
+    }
+
+
+    .fin-card-title {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+    }
+
+    .fin-card-title i {
+        font-size: 20px;
+        padding-top: 3px;
+        padding-right: 5px;
+    }
+
+    .fin-card-title h6 {
+        padding: 0;
+    }
+
+    .fin-card-details {
+        width: 100%;
+        margin: 0 auto;
+        table-layout: fixed;
+        width: 100%;
+        border-collapse: separate;
+        /* 預設是 collapse，要改成 separate 才能用 spacing */
+        border-spacing: 0 20px;
+        /* 水平間距 0，垂直間距 12px */
+    }
+
+
+
+    .fin-card-details td:first-child {
+        width: 150px;
+        /* 固定第一欄寬度 */
+        white-space: nowrap;
+        /* 不換行 */
+    }
+
+    .fin-card-details td:last-child {
+        width: auto;
+        /* 讓右邊自動填滿 */
+        overflow: hidden;
+        /* 超過寬度隱藏 */
+        text-overflow: ellipsis;
+        /* 超出顯示 ... */
+        white-space: nowrap;
+        /* 單行顯示 */
+    }
+
+    .info-button {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding-bottom: 0;
+        gap: 10px;
+        text-align: center;
+    }
+
 }

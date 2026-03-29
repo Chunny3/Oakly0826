@@ -20,10 +20,12 @@ export default function RecommendArticle() {
                   height={421}
                 />
                 <div className="aCard-detail">
+                  <div className="detail-category-phone">居家生活</div>
                   <div className="detail-title">
                     家的靈魂：從家具看見生活的樣子
                   </div>
                   <div className="detail-category">居家生活</div>
+                  <h6>2025.07.24</h6>
                 </div>
               </div>
             </Link>

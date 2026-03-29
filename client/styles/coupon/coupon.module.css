@@ -1,0 +1,238 @@
+/* =====================  優惠券頁面  ===================== */
+.couponHeader {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  padding: 0 24px;
+  background: url(/img/hui/space/minimalist-interior-design.jpg);
+  background-repeat: no-repeat;
+  background-size: 500% auto;
+  background-position: 72% center;
+
+  @media (min-width: 1200px) {
+    height: 700px;
+    background-size: 130% auto;
+  }
+
+  h1,
+  h3 {
+    position: relative;
+    z-index: 3;
+      @media (min-width: 1200px) {
+        margin-left: 40px;
+      }
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    z-index: 2;
+  }
+}
+
+.borderLeft {
+  @media (min-width: 1200px) {
+    padding-left:24px;
+    border-left: 7px solid  #FFF;
+  }
+}
+
+.couponBg {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 0;
+  background-color: var(--primary-04);
+  width: 100%;
+}
+
+.couponContent {
+  flex-wrap: wrap;
+  padding: 0 24px;
+  width: 100%;
+  gap: 28px 16px;
+
+  @media (min-width: 1200px) {
+    gap: 80px;
+  }
+}
+
+.coupon {
+  width: 180px;
+  height: 260px;
+  background: url(/img/hui/card/coupon-bg.png) no-repeat center center;
+  background-size: cover;
+  padding-top: 24px;
+  box-shadow: 2px 4px 10px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 3px 7px 13px 0 rgba(0, 0, 0, 0.20);
+  }
+
+  @media (min-width: 1200px) {
+    width: 225px;
+    height: 330px;
+    padding-top: 36px;
+  }
+}
+
+.couponTag {
+  display: inline-block;
+  background-color: var(--primary-02);
+  padding: 2px 20px;
+}
+
+.discountNumber {
+  font-family: var(--font-inter);
+  font-size: var(--font-en-h1, 40px);
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+
+.discountText {
+  font-family: var(--font-noto-sans);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+.btnGet {
+  font-family: var(--font-noto-sans);
+  font-weight: 700;
+  padding-bottom: 24px;
+
+  @media (min-width: 1200px) {
+    padding-bottom: 36px;
+  }
+  &:hover{
+    color: var(--primary-05);
+  }
+}
+
+.memberArea {
+  gap: 48px;
+  width: 100%;
+  overflow-x: auto;
+  padding: 0 24px;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  @media (min-width: 1200px) {
+    gap: 0;
+    max-width: 1200px;
+    overflow-x: visible;
+    justify-content: space-between;
+  }
+}
+
+.memberCard {
+  width: 250px;
+  gap: 36px;
+  flex-shrink: 0;
+  /* 重要：防止卡片被壓縮 */
+  box-shadow: 2px 4px 10px 0 rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    box-shadow: 3px 7px 13px 0 rgba(0, 0, 0, 0.20);
+  }
+
+  @media (min-width: 1200px) {
+    width: 280px;
+  }
+}
+
+.memberHead {
+  padding-top: 32px;
+
+  @media (min-width: 1200px) {
+    padding-top: 36px;
+  }
+}
+
+.memberCardIcon {
+  object-fit: cover;
+  width: 105px;
+  height: 105px;
+
+  @media (min-width: 1200px) {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+
+
+.memberCard1 {
+  border: 1.5px solid var(--primary-02);
+
+  .memberBottom {
+    background-color: var(--primary-02);
+    height: 80px;
+    width: 100%;
+  }
+
+  h5 {
+    color: var(--primary-02);
+  }
+}
+
+
+.memberCard2 {
+  border: 1.5px solid var(--secondary-03);
+
+  .memberBottom {
+    background-color: var(--secondary-03);
+    height: 80px;
+    width: 100%;
+  }
+
+  h5 {
+    color: var(--secondary-01);
+  }
+}
+
+.memberCard3 {
+  border: 1.5px solid var(--primary-04);
+
+  .memberBottom {
+    background-color: var(--primary-04);
+    height: 80px;
+    width: 100%;
+  }
+
+  h5 {
+    color: var(--primary-01);
+  }
+}
+
+.memberCard1:hover .memberCardIcon {
+  content: url('/img/hui/icon/sprout.gif');
+}
+
+.memberCard2:hover .memberCardIcon {
+  content: url('/img/hui/icon/autumn-tree.gif');
+}
+
+.memberCard3:hover .memberCardIcon {
+  content: url('/img/hui/icon/forest.gif');
+}
+
+.qaText {
+  padding-bottom: 24px;
+  gap: 10px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--primary-03, #919191);
+  }
+}

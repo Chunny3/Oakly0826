@@ -17,3 +17,6 @@ logs/
 
 # Coverage reports
 coverage/
+
+# OS and IDE files
+.DS_Store.DS_Store

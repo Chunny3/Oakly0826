@@ -1,18 +1,15 @@
-"use client";
+"use client"
 
-import { createContext, useContext } from "react";
+import { createContext, useContext, useState} from "react";
 
-const ArticleContext = createContext(null);
-ArticleContext.displayName = "ArticleContext";
+const ArticleFilterContext = createContext();
 
-export function ArticleProvider({children}){
+export default ArticleFilterContext({children}){
+    // 原始資料
+    const [allArticles, serAllArticles] = useState([]);
+    const [filterArticles, setFilterArticles] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    // 篩選條件狀態
     
-    
-    return(
-        <ArticleContext.Provider value={{}}>
-            {children}
-        </ArticleContext.Provider>
-    )
 }
-
-export const useArticle =() => useContext(ArticleContext);

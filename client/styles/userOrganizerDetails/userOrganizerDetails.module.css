@@ -1,0 +1,97 @@
+.infoGap {
+  gap: 8px;
+
+  @media (min-width: 1200px) {
+    gap: 80px;
+  }
+}
+
+.imgGap {
+  gap: 14px;
+
+  @media (min-width: 1200px) {
+    gap: var(--gap-md);
+  }
+}
+
+.ptMd {
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--primary-02, #9fa79a);
+}
+
+.minWidth {
+  @media (min-width: 1200px) {
+    min-width: 200px;
+  }
+}
+.listCard {
+  padding: 24px 32px;
+
+  @media (min-width: 1200px) {
+    /* width: 1020px; */
+    padding: 32px 60px;
+  }
+}
+
+.cardBottom {
+  border-top: 1px solid var(--primary-02, #9fa79a);
+  padding-top: var(--gap-md);
+}
+/* 1.諮詢中 */
+.listCardStatus1 {
+  border: 2px solid var(--primary-02, #9fa79a);
+}
+
+.listStatus1 {
+  display: flex;
+  width: fit-content;
+  padding: 4px 16px;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary-02, #9fa79a);
+}
+
+/* 2.已預約 */
+.listCardStatus2 {
+  border: 2px solid var(--primary-04, #9db8af);
+}
+.listStatus2 {
+  display: flex;
+  width: fit-content;
+  padding: 4px 16px;
+  justify-content: center;
+  align-items: center;
+  background: var(--primary-04, #9db8af);
+}
+
+/* 3.已完成 */
+.listCardStatus3 {
+  border: 2px solid var(--secondary-03, #ddb397);
+}
+.listStatus3 {
+  display: flex;
+  width: fit-content;
+  padding: 4px 16px;
+  justify-content: center;
+  align-items: center;
+  background: var(--secondary-03, #ddb397);
+}
+
+/* 4.已取消 */
+.listCardStatus4 {
+  border: 2px solid var(--color-gray-600, #ababab);
+}
+
+.listStatus4 {
+  display: flex;
+  width: fit-content;
+  padding: 4px 16px;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-gray-600, #ababab);
+}
+
+.userHouseImage {
+  border: 1px solid var(--primary-03, #919191);
+  object-fit: cover;
+}

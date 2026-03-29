@@ -1,16 +1,104 @@
-.delivery{
+.delivery {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.d-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.delivery p {
+  padding-left: 20px;
+  color: var(--primary-05);
+}
+
+.phone {
+  display: none;
+}
+
+@media (max-width: 430px) {
+  .pc {
+    display: none;
+  }
+
+  .phone {
+    display: block;
+  }
+
+  .delivery.phone {
+    overflow: hidden;
+  }
+
+  /* .toggleBtn.phone {
+    position: relative;
+    width: calc(100% + 40px);
+    margin-left: -40px;
+    border: 1px solid var(--primary-05);
+    background-color: var(--white);
+    height: 84px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .toggleBtn.active.phone {
+    border: 1px solid var(--primary-05);
+    background-color: var(--primary-04);
+  } */
+
+  .d-lists.phone {
     display: flex;
     flex-direction: column;
+    padding: 20px 20px;
     gap: 20px;
-}
+  }
 
-.d-list{
+  .form-check.phone {
+    position: relative;
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-}
+    align-items: flex-start;
+    margin-bottom: 15px;
+  }
 
-.delivery p{
-    padding-left: 20px;
-    color: var(--primary-05);
+  .form-check-input.phone {
+    /* 確保 radio 按鈕可見且功能正常 */
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    margin-top: 2px;
+    flex-shrink: 0;
+
+    /* 重置可能被覆蓋的樣式 */
+    appearance: auto !important;
+    -webkit-appearance: radio !important;
+    -moz-appearance: radio !important;
+
+    /* 確保可以點擊 */
+    pointer-events: auto !important;
+    cursor: pointer !important;
+
+    /* 確保在手機上可見 */
+    opacity: 1 !important;
+    position: relative !important;
+    z-index: 1 !important;
+  }
+
+  .form-check-input.phone:checked {
+    /* 確保選中狀態可見 */
+    background-color: #007bff !important;
+    border-color: #007bff !important;
+  }
+
+  .form-check-label.phone {
+    flex: 1;
+    cursor: pointer !important;
+    /* 確保 label 可以觸發 radio */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
 }

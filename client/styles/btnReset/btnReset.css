@@ -1,0 +1,21 @@
+/* 移除 Bootstrap 按鈕所有 focus/active 黑框和樣式 */
+.btn {
+  border-radius: 0 !important;
+}
+
+.btn,
+button {
+  &:not(.btn-green , .brownBtn,tab-items ) {
+    &:focus,
+    &:focus-visible,
+    &:active,
+    &:active:focus,
+    &.active,
+    &.active:focus,
+    &.show,
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled):active:focus {
+      border-color: transparent !important;
+    }
+  }
+}

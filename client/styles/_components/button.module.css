@@ -1,0 +1,51 @@
+/* 共用基底 */
+.btn {
+  display: inline-block;
+  /* margin: 0 auto; */
+  padding: 10px 16px;   /* 調整按鈕厚度（上下/左右） */
+  font-size: 16px;      /* 文字大小 */
+  line-height: 1;       /* 避免文字加高 */
+  text-align: center;
+  /* height: 44px;         想固定高度就加這行；不要固定就刪掉 */
+  cursor: pointer; /* 游標小手 */
+  /* border-radius: 1px; */
+  transition: 0.3s all ease-in;
+}
+
+/* variant */
+.primary01 { background-color: #6c9c8f; color: #fff; border: none;}
+.primary01:hover { filter: brightness(0.95); }
+.white { background-color: #fff; color: #6c9c8f; border: 1px solid #6c9c8f; }
+.primary01:hover { filter: brightness(0.95); }
+
+/* size */
+.sm { padding: 6px 12px; font-size: 16px; height: 44px; width: 191px;}
+.md { padding: 10px 16px; font-size: 16px; height: 44px; }
+.userlg { padding: 6px 12px; font-size: 16px; height: 44px; width: 100%;}
+
+
+
+/* 按鈕群組 */
+.btnGroup {
+  display: flex;
+  justify-content: center; /* ← 靠右 */
+  align-items: center;       /* ← 垂直置中 */
+  gap: 25px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+
+/* RWD: 小螢幕時每顆佔滿一行 */
+@media (max-width: 576px) {
+  .btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 430px) {
+  .btnGroup {
+    margin-top: 40px;   /* 上方間隔加大 */
+    gap: 16px;           /* 兩顆按鈕之間縮小一點 */
+  }
+}

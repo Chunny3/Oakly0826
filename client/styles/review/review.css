@@ -1,0 +1,987 @@
+/* 重置樣式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    font-family: 'Noto Sans TC', sans-serif;
+    line-height: 1.6;
+    background-color: #ffffff;
+}
+
+.container-fluid.header {
+    display: none;
+}
+
+.review-controls {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 8px 60px 0px 60px;
+    cursor: pointer;
+}
+
+.sort-select:hover {
+    border: 1px solid #494949;
+    background-color: #ededed;
+    cursor: pointer;
+
+
+
+}
+
+.sort-select:focus,
+.sort-select:active {
+    border: 1px solid #494949;
+    background-color: #ededed;
+    cursor: pointer;
+
+}
+
+
+.sort-select {
+    border: 1px solid #8b8b8b;
+    outline: none;
+    border-radius: 25px;
+    font-size: 12px;
+    line-height: 1.6;
+    padding: 4px 12px;
+    color: #494949;
+    font-weight: 500;
+    box-sizing: border-box;
+    cursor: pointer;
+
+
+
+}
+.swal2-confirm:focus,
+.swal2-cancel:focus,
+.swal2-deny:focus,
+.swal2-close:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* 也可以用通用選擇器 */
+.swal2-popup button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.review-page {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    width: 100%;
+    color: #6A6A6A;
+    margin-top: 60px;
+}
+
+/* 評論總覽區塊 */
+.review-summary {
+    padding: 16px 160px;
+    margin-bottom: 12px;
+    text-align: center;
+}
+
+
+.rating-overview {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin: 0 auto;
+    flex-wrap: nowrap;
+    max-width: 800px;
+}
+
+.average-rating {
+    width: fit-content;
+    height: 100%;
+    text-align: center;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+}
+
+.rating-number {
+    display: flex;
+    justify-content: center;
+    font-size: 42px;
+    font-weight: 700;
+    width: 100%;
+    align-content: center;
+}
+
+.rating-stars {
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    margin-bottom: 16px;
+
+    justify-content: center;
+}
+
+
+
+.rating-stars .fas.fa-star.filled {
+    color: #6A6A6A;
+}
+
+.review-count {
+    font-size: 16px;
+}
+
+.rating-distribution {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
+.rating-bar {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 12px;
+}
+
+.review-engagement span {
+    color: #719A8B;
+    font-size: 16px;
+    font-family: 'Noto Sans TC';
+    font-weight: 400;
+    line-height: 24px;
+    word-wrap: break-word
+}
+
+.rating-bar span:first-child {
+    width: 30px;
+    text-align: right;
+    font-size: 14px;
+}
+
+.bar-container {
+    flex: 1;
+    height: 8px;
+    background-color: #e9ecef;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.bar {
+    height: 100%;
+    background-color: #6A6A6A;
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.rating-bar span:last-child {
+    width: 40px;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* 圖片上傳區域樣式 */
+.image-upload-section {
+    margin: 20px 0;
+    padding: 20px;
+    border: 2px dashed #ddd;
+    border-radius: 2px;
+    background: #fafafa;
+}
+
+.upload-label {
+    display: block;
+    font-weight: 500;
+    color: #8B8B8B;
+    margin-top: 10px;
+}
+
+.upload-label i {
+    margin-right: 8px;
+    color: #DBA783;
+}
+
+.upload-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #DBA783;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.upload-btn:hover {
+    background: #c9966f;
+    transform: translateY(-1px);
+}
+
+/* 圖片預覽容器 */
+.image-preview-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.image-preview {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 8px;
+    border: 2px solid #eee;
+
+}
+
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.remove-image {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #CD8A5B;
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    z-index: 10;
+}
+
+/* 評論中的圖片顯示 */
+.review-images {
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    z-index: 11;
+
+}
+
+.review-image {
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid #eee;
+}
+
+.review-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 預設圖片佔位符 */
+.default-image-placeholder {
+    width: 120px;
+    height: 120px;
+    border: 2px dashed #DBA783;
+    border-radius: 2px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #fafafa;
+    transition: all 0.3s ease;
+    color: #6a6a6a;
+}
+
+.default-image-placeholder:hover {
+    background: #f0f0f0;
+    border-color: #c9966f;
+}
+
+.default-image-placeholder i {
+    font-size: 24px;
+    color: #DBA783;
+    margin-bottom: 8px;
+}
+
+.default-image-placeholder span {
+    font-size: 12px;
+    text-align: center;
+}
+
+.swal2-close {
+    border: none !important;
+    outline: none !important;
+}
+
+.swal2-close:hover {
+    color: #6a6a6a;
+}
+
+
+/* 添加更多圖片的按鈕 */
+.add-more-image {
+    width: 80px;
+    height: 80px;
+    border: 2px dashed #DBA783;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #fafafa;
+    transition: all 0.3s ease;
+}
+
+.add-more-image:hover {
+    background: #f0f0f0;
+    border-color: #c9966f;
+}
+
+.add-more-image i {
+    font-size: 20px;
+    color: #DBA783;
+}
+
+/* 調整圖片預覽容器 */
+.image-preview-container {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+    align-items: center;
+
+
+}
+
+
+
+/* 評論列表 */
+.review-list {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    display: inline-flex;
+}
+
+.review-item {
+    width: 100%;
+    padding: 46px 60px;
+    background: white;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-content: center;
+    display: flex;
+    font-size: 16px;
+    font-family: Noto Sans TC;
+    font-weight: 500;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    gap:8px
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 12px;
+    object-fit: cover;
+}
+
+.user-details {
+    flex: 1;
+}
+
+.user-name {
+    font-weight: 600;
+    display: flex
+;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.review-time {
+    font-size: 14px;
+    color: #719A8B;
+}
+
+
+.fas.fa-star {
+    color: #ffffff;
+    margin-right: 4px;
+}
+
+
+.review-rating .fas.fa-star.filled {
+    color: #6A6A6A;
+}
+
+.review-text {
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.review-engagement {
+    display: flex;
+    gap: 20px;
+}
+
+.thumbs-up,
+.thumbs-down {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #719A8B;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+
+
+.thumbs-up:hover i,
+.thumbs-down:hover i {
+    font-weight: 900;
+    /* hover 後變實心 */
+    color: #719A8B;
+}
+
+.thumbs-up i,
+.thumbs-down i {
+    font-size: 16px;
+    font-weight: 400;
+
+
+}
+
+/* 撰寫評論區塊 */
+.write-review {
+    margin-bottom: 40px;
+    padding: 36px 60px;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    display: flex;
+    gap: 28px;
+}
+
+.write-review h2 {
+    text-align: left;
+    font-size: 24px;
+    color: #6A6A6A;
+    font-size: 24px;
+    font-family: Noto Sans TC;
+    font-weight: 900;
+    line-height: 36px;
+    letter-spacing: 2px;
+    word-wrap: break-word
+}
+
+.rating-input {
+    display: flex;
+    text-align: left;
+    margin-bottom: 32px;
+    gap: 16px;
+}
+
+.rating-input .fas.fa-star {
+    font-size: 32px;
+    color: #EDEDED;
+    /* 預設顏色為淺灰色 */
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 24px;
+    /* 固定寬度 */
+    height: 24px;
+    /* 固定高度 */
+    display: inline-flex;
+    align-items: center;
+    background-color: transparent;
+    /* 透明背景 */
+}
+
+.rating-input .fas.fa-star.filled {
+    color: #6A6A6A;
+}
+
+.rating-input .fas.fa-star:hover {
+    color: #6A6A6A;
+}
+
+
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.form-row input {
+    flex: 1;
+    padding: 12px;
+    border: 1px #8B8B8B solid;
+    border-radius: 2px;
+    color: #6A6A6A;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.form-row input:focus {
+    border-color: #719A8B;
+
+}
+.review-actions {
+    display: flex;
+    gap: 10px;
+    justify-content:flex-end;
+  }
+  
+  .edit-btn {
+    background: #ededed;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+    color: #6a6a6a;
+    font-size: 12px;
+  }
+  
+  .edit-btn:hover {
+    background: #d8d8d8;
+  }
+
+
+  
+textarea {
+    border-radius: 2px;
+    margin-bottom: 14px;
+    width: 100%;
+    height: 120px;
+    padding: 14px;
+    border: 1px #8B8B8B solid;
+    color: #6A6A6A;
+    font-size: 14px;
+    font-family: Noto Sans TC;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: 1px;
+    word-wrap: break-word;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+    border-color: #719A8B;
+}
+
+.form-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: left;
+}
+
+
+
+.submit-btn,
+.return-btn {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 2px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn {
+    background-color: #719A8B;
+    color: white;
+}
+
+.submit-btn:hover {
+    background-color: #5a8a7c;
+}
+
+.return-btn {
+    background-color: #6c757d;
+    color: white;
+}
+
+.return-btn:hover {
+    background-color: #5a6268;
+}
+
+.footer {
+    display: none;
+}
+.delete-btn {
+    background: #dc3545;
+    color: white;
+    border: 1px solid #dc3545;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    margin-left: 8px;
+  }
+  
+  .delete-btn:hover {
+    background: #c82333;
+    border-color: #bd2130;
+  }
+  
+  .review-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .swal2-cancel.swal2-styled{
+    background-color: #6A6A6A;
+  }
+  .swal2-cancel:hover {
+    background-color: #5a6268 !important;
+    border-color: #5a6268 !important;
+  }
+  .swal2-warning{
+    color: #719A8B !important;
+    border: 3px solid #719A8B !important;
+  }
+  .swal2-confirm {
+    background-color: #DBA783 !important;
+    border: 1px solid #DBA783 !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    transition: all 0.3s ease !important;
+  }
+  
+  .swal2-confirm:hover {
+    background-color: #c9956e !important;
+    border-color: #c9956e !important;
+  }
+  .swal2-success-ring,
+  .swal2-success-line-tip,
+.swal2-success-line-long {
+    color: #ba5252 !important;
+    border: 3px solid #ba5252 !important;
+  }
+
+/* 手機版樣式 */
+@media (max-width: 430px) {
+    .modal-header {
+        display: none;
+    }
+
+    .review-page {
+        padding: 16px;
+    }
+
+    .review-summary {
+        padding: 24px 16px;
+        margin-bottom: 24px;
+    }
+
+    .rating-overview {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        gap: 24px;
+    }
+
+    .rating-distribution {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .average-rating {
+        margin: 0;
+    }
+
+    .rating-number {
+        font-size: 36px;
+    }
+
+    .rating-stars .fas.fa-star {
+        font-size: 20px;
+    }
+
+    .review-item {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .review-text {
+        font-size: 14px;
+    }
+
+    .write-review {
+        padding: 24px 16px;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .rating-input .fas.fa-star {
+        font-size: 28px;
+        margin: 0 4px;
+    }
+
+    .form-buttons {
+        gap: 12px;
+    }
+
+    .submit-btn,
+    .return-btn {
+        width: 100%;
+        padding: 14px 24px;
+    }
+    /* 修復1920px雙滾輪問題 - 簡化版 */
+@media (min-width: 1920px) {
+    
+    /* 如果Review組件在modal容器內 */
+    .modal-open body,
+    .review-modal-open body {
+        overflow: hidden !important;
+        height: 100vh;
+        position: fixed;
+        width: 100%;
+    }
+    
+    /* Review頁面本身的滾動修復 */
+    .review-page {
+        max-height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    
+    /* 自定義滾動條樣式 */
+    .review-page::-webkit-scrollbar {
+        width: 8px;
+    }
+    
+    .review-page::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    
+    .review-page::-webkit-scrollbar-thumb {
+        background: #719A8B;
+        border-radius: 4px;
+        opacity: 0.7;
+    }
+    
+    .review-page::-webkit-scrollbar-thumb:hover {
+        background: #5d8a7a;
+        opacity: 1;
+    }
+    
+    /* 確保SweetAlert2圖片彈窗不會產生雙滾輪 */
+    body.swal2-shown {
+        overflow: hidden !important;
+    }
+    
+    /* 防止內容區域產生額外滾輪 */
+    .review-summary,
+    .review-list,
+    .write-review {
+        overflow: visible;
+    }
+    
+    /* 確保圖片容器不會產生滾輪 */
+    .review-images,
+    .image-preview-container {
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+}
+}
+
+/* 平板版樣式 */
+@media (max-width: 768px) {
+    .rating-overview {
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .rating-distribution {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .footer {
+        display: none;
+    }
+
+    .image-preview-container {
+        gap: 8px;
+    }
+
+    .image-preview {
+        width: 80px;
+        height: 80px;
+    }
+
+    .review-image {
+        width: 100px;
+        height: 100px;
+    }
+
+    .upload-btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+
+
+}
+
+
+/* 修復評論列表雙滾輪問題 - 針對截圖問題 */
+@media (min-width: 1920px) {
+    
+    /* 修復評論列表區域的雙滾輪 */
+    .review-list {
+        width: 100%;
+        height: auto; /* 移除固定高度 */
+        overflow: visible; /* 移除overflow設定，讓它不產生滾輪 */
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        display: flex; /* 保持flex，但移除inline-flex */
+    }
+    
+    /* 確保review-page是主要滾動容器 */
+    .review-page {
+        height: 100vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    /* 美化主滾動條 */
+    .review-page::-webkit-scrollbar {
+        width: 12px;
+    }
+    
+    .review-page::-webkit-scrollbar-track {
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+    
+    .review-page::-webkit-scrollbar-thumb {
+        background: #719A8B;
+        border-radius: 6px;
+        border: 2px solid #f8f9fa;
+    }
+    
+    .review-page::-webkit-scrollbar-thumb:hover {
+        background: #5d8a7a;
+    }
+    
+    /* 確保每個評論項目不會產生滾輪 */
+    .review-item {
+        width: 100%;
+        padding: 46px 60px;
+        background: white;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-content: center;
+        display: flex;
+        overflow: visible; /* 重要：移除可能的overflow設定 */
+    }
+    
+    /* 確保其他區域也不會產生滾輪 */
+    .review-summary,
+    .write-review {
+        overflow: visible;
+        flex-shrink: 0;
+    }
+    
+    /* 禁用body滾動 */
+    html, body {
+        overflow: hidden;
+        height: 100%;
+    }
+    
+    /* 特殊處理圖片容器 */
+    .review-images {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+    
+    .image-preview-container {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+    }
+}
+
+/* 確保在小於1920px時恢復正常 */
+@media (max-width: 1919px) {
+    html, body {
+        overflow: auto !important;
+        height: auto !important;
+    }
+    
+    .review-page {
+        height: auto !important;
+        overflow: visible !important;
+    }
+    
+    .review-list {
+        overflow: hidden !important; /* 保持原有設定 */
+    }
+}
